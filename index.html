@@ -1,0 +1,1520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Unique Student Cooperation | Student Portal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,600;0,700;1,500&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#0F2A4A;
+  --navy-light:#1B3F66;
+  --navy-pale:#E7EDF3;
+  --maroon:#7A1F2B;
+  --maroon-pale:#F5E7E7;
+  --gold:#C89B3C;
+  --gold-light:#E4C570;
+  --paper:#F7F5F0;
+  --paper-dark:#EDE9DF;
+  --ink:#1B1B1B;
+  --ink-soft:#5B5B5B;
+  --line:#DDD6C7;
+  --success:#2F6B4F;
+  --success-pale:#E4F0E9;
+  --danger:#B0413E;
+  --danger-pale:#FBEAE9;
+  --white:#FFFFFF;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{
+  font-family:'Inter',sans-serif;
+  background:var(--paper);
+  color:var(--ink);
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,h4{font-family:'Lora',Georgia,serif;color:var(--navy);}
+.mono{font-family:'IBM Plex Mono',monospace;}
+a{color:inherit;text-decoration:none;}
+button{font-family:inherit;cursor:pointer;}
+::selection{background:var(--gold-light);}
+
+/* ---------- LOGIN SCREEN ---------- */
+#loginScreen{
+  min-height:100vh;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+}
+@media (max-width:860px){ #loginScreen{grid-template-columns:1fr;} .loginLeft{display:none;} }
+
+.loginLeft{
+  background:
+    radial-gradient(circle at 30% 20%, rgba(200,155,60,0.10), transparent 45%),
+    linear-gradient(160deg, var(--navy) 0%, #0A1D33 100%);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  padding:48px;
+  position:relative;
+  overflow:hidden;
+}
+.loginLeft::before{
+  content:"";
+  position:absolute;inset:0;
+  background-image:repeating-linear-gradient(135deg, rgba(255,255,255,0.02) 0 2px, transparent 2px 40px);
+}
+.loginLeft svg{width:220px;height:220px;filter:drop-shadow(0 8px 24px rgba(0,0,0,0.35));}
+.loginLeft h1{
+  color:var(--white);
+  font-size:26px;
+  margin-top:28px;
+  text-align:center;
+  letter-spacing:0.5px;
+}
+.loginLeft p{
+  color:var(--gold-light);
+  font-family:'IBM Plex Mono',monospace;
+  font-size:12px;
+  letter-spacing:3px;
+  margin-top:8px;
+  text-transform:uppercase;
+}
+.loginStats{
+  display:flex;
+  gap:28px;
+  margin-top:44px;
+  border-top:1px solid rgba(255,255,255,0.15);
+  padding-top:24px;
+  width:100%;
+  max-width:420px;
+  justify-content:center;
+}
+.loginStats div{text-align:center;}
+.loginStats b{display:block;color:var(--white);font-family:'Lora',serif;font-size:20px;}
+.loginStats span{color:rgba(255,255,255,0.55);font-size:11px;letter-spacing:1px;text-transform:uppercase;}
+
+.loginRight{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:32px;
+}
+.loginBox{width:100%;max-width:380px;}
+.loginBox .eyebrow{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:11px;
+  letter-spacing:2px;
+  color:var(--maroon);
+  text-transform:uppercase;
+  margin-bottom:10px;
+}
+.loginBox h2{font-size:26px;margin-bottom:6px;}
+.loginBox .sub{color:var(--ink-soft);font-size:14px;margin-bottom:32px;}
+.field{margin-bottom:18px;}
+.field label{
+  display:block;
+  font-size:12px;
+  font-weight:600;
+  color:var(--navy);
+  margin-bottom:6px;
+  letter-spacing:0.3px;
+}
+.field input{
+  width:100%;
+  padding:12px 14px;
+  border:1.5px solid var(--line);
+  background:var(--white);
+  border-radius:4px;
+  font-size:14px;
+  font-family:'IBM Plex Mono',monospace;
+  color:var(--ink);
+  transition:border-color .15s;
+}
+.field input:focus{outline:none;border-color:var(--navy);}
+.rowBetween{display:flex;align-items:center;justify-content:space-between;margin-bottom:22px;font-size:13px;}
+.rowBetween label{display:flex;align-items:center;gap:6px;color:var(--ink-soft);cursor:pointer;}
+.rowBetween a{color:var(--maroon);font-weight:600;}
+.btnPrimary{
+  width:100%;
+  background:var(--navy);
+  color:var(--white);
+  border:none;
+  padding:13px;
+  border-radius:4px;
+  font-size:14px;
+  font-weight:600;
+  letter-spacing:0.4px;
+  transition:background .15s;
+}
+.btnPrimary:hover{background:var(--navy-light);}
+.loginNote{
+  margin-top:22px;
+  font-size:12px;
+  color:var(--ink-soft);
+  text-align:center;
+  line-height:1.6;
+}
+.loginError{
+  display:none;
+  background:var(--danger-pale);
+  color:var(--danger);
+  border:1px solid #E7C6C4;
+  padding:10px 12px;
+  border-radius:4px;
+  font-size:12.5px;
+  margin-bottom:16px;
+}
+
+/* ---------- APP SHELL ---------- */
+#appShell{display:none;min-height:100vh;grid-template-columns:250px 1fr;}
+#appShell.active{display:grid;}
+
+.sidebar{
+  background:var(--navy);
+  color:rgba(255,255,255,0.85);
+  padding:22px 0;
+  display:flex;
+  flex-direction:column;
+  position:sticky;
+  top:0;
+  height:100vh;
+  overflow-y:auto;
+}
+.sidebar::-webkit-scrollbar{width:5px;}
+.sidebar::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.15);}
+.sbBrand{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:0 20px 20px 20px;
+  border-bottom:1px solid rgba(255,255,255,0.12);
+  margin-bottom:14px;
+}
+.sbBrand svg{width:38px;height:38px;flex-shrink:0;}
+.sbBrand div b{display:block;color:var(--white);font-family:'Lora',serif;font-size:14px;line-height:1.25;}
+.sbBrand div span{font-size:9.5px;color:var(--gold-light);letter-spacing:1.5px;}
+
+.navGroupLabel{
+  font-size:10px;
+  letter-spacing:1.5px;
+  color:rgba(255,255,255,0.35);
+  text-transform:uppercase;
+  padding:14px 20px 6px;
+}
+.navItem{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:9px 20px;
+  font-size:13.5px;
+  color:rgba(255,255,255,0.75);
+  border-left:3px solid transparent;
+  cursor:pointer;
+  transition:background .12s;
+}
+.navItem:hover{background:rgba(255,255,255,0.05);color:var(--white);}
+.navItem.active{background:rgba(255,255,255,0.09);color:var(--white);border-left-color:var(--gold);}
+.navBadge{
+  width:26px;height:26px;
+  border-radius:6px;
+  background:rgba(255,255,255,0.08);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'IBM Plex Mono',monospace;
+  font-size:9.5px;
+  font-weight:600;
+  letter-spacing:0.3px;
+  flex-shrink:0;
+  color:var(--gold-light);
+}
+.navItem.active .navBadge{background:var(--gold);color:var(--navy);}
+
+.sbFooter{
+  margin-top:auto;
+  padding:16px 20px 4px;
+  border-top:1px solid rgba(255,255,255,0.12);
+}
+.logoutBtn{
+  width:100%;
+  background:transparent;
+  border:1px solid rgba(255,255,255,0.25);
+  color:rgba(255,255,255,0.75);
+  padding:9px;
+  border-radius:4px;
+  font-size:12.5px;
+  font-weight:600;
+}
+.logoutBtn:hover{border-color:var(--gold);color:var(--gold-light);}
+
+.mainWrap{display:flex;flex-direction:column;min-height:100vh;}
+.topbar{
+  background:var(--white);
+  border-bottom:1px solid var(--line);
+  padding:14px 30px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  position:sticky;top:0;z-index:5;
+}
+.topbar h1{font-size:19px;}
+.topbar .crumb{font-size:11.5px;color:var(--ink-soft);font-family:'IBM Plex Mono',monospace;letter-spacing:0.5px;margin-top:2px;}
+.topRight{display:flex;align-items:center;gap:16px;}
+.topPill{
+  background:var(--navy-pale);
+  color:var(--navy);
+  font-family:'IBM Plex Mono',monospace;
+  font-size:11.5px;
+  padding:6px 12px;
+  border-radius:20px;
+  font-weight:600;
+}
+.avatarChip{
+  display:flex;align-items:center;gap:10px;
+  padding:5px 10px 5px 5px;
+  border:1px solid var(--line);
+  border-radius:24px;
+}
+.avatarChip .circle{
+  width:30px;height:30px;border-radius:50%;
+  background:var(--maroon);color:var(--white);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Lora',serif;font-weight:700;font-size:13px;
+}
+.avatarChip span{font-size:12.5px;font-weight:600;color:var(--navy);}
+
+.content{padding:28px 30px 60px;flex:1;}
+.panel{display:none;animation:fadeIn .25s ease;}
+.panel.active{display:block;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:translateY(0);}}
+
+.pageHead{margin-bottom:22px;}
+.pageHead .eyebrow{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:2px;color:var(--maroon);text-transform:uppercase;margin-bottom:6px;}
+.pageHead h2{font-size:24px;}
+.pageHead p{color:var(--ink-soft);font-size:13.5px;margin-top:4px;max-width:620px;}
+
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px;}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+@media (max-width:1000px){.grid4{grid-template-columns:repeat(2,1fr);} .grid3,.grid2{grid-template-columns:1fr;}}
+
+.statCard{
+  background:var(--white);
+  border:1px solid var(--line);
+  border-radius:8px;
+  padding:18px 20px;
+  border-top:3px solid var(--gold);
+}
+.statCard .lbl{font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--ink-soft);margin-bottom:8px;}
+.statCard .val{font-family:'Lora',serif;font-size:26px;color:var(--navy);font-weight:700;}
+.statCard .sub{font-size:11.5px;color:var(--ink-soft);margin-top:4px;}
+
+.card{
+  background:var(--white);
+  border:1px solid var(--line);
+  border-radius:8px;
+  padding:22px;
+  margin-bottom:20px;
+}
+.card h3{font-size:16px;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;}
+.card h3 .tag{font-family:'IBM Plex Mono',monospace;font-size:10.5px;background:var(--paper-dark);padding:3px 9px;border-radius:12px;color:var(--ink-soft);font-weight:500;}
+
+table{width:100%;border-collapse:collapse;font-size:13px;}
+th{
+  text-align:left;
+  font-size:10.5px;
+  letter-spacing:0.8px;
+  text-transform:uppercase;
+  color:var(--ink-soft);
+  padding:9px 10px;
+  border-bottom:2px solid var(--paper-dark);
+}
+td{padding:11px 10px;border-bottom:1px solid var(--paper-dark);color:var(--ink);}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:var(--paper);}
+
+.pill{display:inline-block;padding:3px 11px;border-radius:20px;font-size:11px;font-weight:600;letter-spacing:0.3px;}
+.pill.green{background:var(--success-pale);color:var(--success);}
+.pill.red{background:var(--danger-pale);color:var(--danger);}
+.pill.gold{background:#FBF2DE;color:#8A6A1F;}
+.pill.navy{background:var(--navy-pale);color:var(--navy);}
+
+.btn{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:9px 16px;border-radius:5px;font-size:13px;font-weight:600;border:1px solid transparent;
+}
+.btn.primary{background:var(--navy);color:var(--white);}
+.btn.primary:hover{background:var(--navy-light);}
+.btn.outline{background:transparent;border-color:var(--navy);color:var(--navy);}
+.btn.outline:hover{background:var(--navy-pale);}
+.btn.maroon{background:var(--maroon);color:var(--white);}
+.btn.maroon:hover{opacity:0.9;}
+.btn.small{padding:6px 12px;font-size:12px;}
+.btn.gold{background:var(--gold);color:var(--navy);}
+
+.formGrid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.formGrid.single{grid-template-columns:1fr;}
+.fGroup label{display:block;font-size:12px;font-weight:600;color:var(--navy);margin-bottom:6px;}
+.fGroup input,.fGroup select,.fGroup textarea{
+  width:100%;padding:10px 12px;border:1.5px solid var(--line);border-radius:4px;font-size:13.5px;font-family:'Inter',sans-serif;background:var(--white);
+}
+.fGroup textarea{resize:vertical;min-height:90px;}
+.fGroup input:focus,.fGroup select:focus,.fGroup textarea:focus{outline:none;border-color:var(--navy);}
+
+.stepBar{display:flex;gap:0;margin-bottom:26px;}
+.stepBar .step{flex:1;text-align:center;padding-bottom:10px;border-bottom:3px solid var(--paper-dark);font-size:11.5px;color:var(--ink-soft);font-weight:600;}
+.stepBar .step.done{border-color:var(--success);color:var(--success);}
+
+.uploadBox{
+  border:2px dashed var(--line);
+  border-radius:8px;
+  padding:34px;
+  text-align:center;
+  color:var(--ink-soft);
+  font-size:13px;
+  background:var(--paper);
+  margin-bottom:16px;
+}
+.uploadBox b{color:var(--navy);display:block;margin-bottom:6px;font-size:14px;}
+
+.docRow{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border:1px solid var(--line);border-radius:6px;margin-bottom:10px;background:var(--white);}
+.docRow .left{display:flex;align-items:center;gap:12px;}
+.docIcon{width:34px;height:34px;border-radius:6px;background:var(--navy-pale);color:var(--navy);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;font-family:'IBM Plex Mono',monospace;}
+
+.timetable{display:grid;grid-template-columns:90px repeat(5,1fr);gap:6px;}
+.timetable .head{font-size:11px;font-weight:700;color:var(--navy);text-align:center;padding:8px 4px;}
+.timetable .timeCell{font-size:11px;color:var(--ink-soft);padding:14px 4px;font-family:'IBM Plex Mono',monospace;text-align:right;padding-right:10px;}
+.ttSlot{background:var(--navy-pale);border-left:3px solid var(--navy);border-radius:4px;padding:8px 8px;font-size:11px;min-height:56px;}
+.ttSlot b{display:block;color:var(--navy);font-size:11.5px;margin-bottom:2px;}
+.ttSlot span{color:var(--ink-soft);font-size:10px;}
+.ttSlot.lab{background:var(--maroon-pale);border-left-color:var(--maroon);}
+.ttSlot.lab b{color:var(--maroon);}
+.ttEmpty{border-radius:4px;min-height:56px;}
+
+.sgpaChart{display:flex;align-items:flex-end;gap:18px;height:220px;padding:20px 10px 0;}
+.sgpaBarWrap{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;}
+.sgpaBar{width:100%;max-width:46px;background:linear-gradient(180deg,var(--gold-light),var(--gold));border-radius:4px 4px 0 0;position:relative;}
+.sgpaBar .val{position:absolute;top:-22px;left:50%;transform:translateX(-50%);font-size:11.5px;font-weight:700;color:var(--navy);font-family:'IBM Plex Mono',monospace;}
+.sgpaLbl{margin-top:10px;font-size:11px;color:var(--ink-soft);text-align:center;font-weight:600;}
+.sgpaLbl small{display:block;color:var(--ink-soft);font-weight:400;margin-top:2px;}
+
+.idCard{
+  width:340px;
+  background:linear-gradient(160deg,var(--navy),#0A1D33);
+  border-radius:14px;
+  padding:20px;
+  color:var(--white);
+  position:relative;
+  overflow:hidden;
+  box-shadow:0 12px 30px rgba(15,42,74,0.25);
+}
+.idCard::before{content:"";position:absolute;inset:0;background-image:repeating-linear-gradient(135deg, rgba(255,255,255,0.03) 0 2px, transparent 2px 40px);}
+.idCardTop{display:flex;align-items:center;gap:10px;margin-bottom:18px;position:relative;}
+.idCardTop svg{width:32px;height:32px;}
+.idCardTop b{font-family:'Lora',serif;font-size:12.5px;display:block;line-height:1.2;}
+.idCardTop span{font-size:8.5px;color:var(--gold-light);letter-spacing:1.5px;}
+.idPhoto{width:64px;height:64px;border-radius:8px;background:rgba(255,255,255,0.12);display:flex;align-items:center;justify-content:center;font-family:'Lora',serif;font-size:22px;font-weight:700;color:var(--gold-light);border:1px solid rgba(255,255,255,0.2);margin-bottom:14px;}
+.idName{font-family:'Lora',serif;font-size:17px;margin-bottom:2px;}
+.idProg{font-size:11.5px;color:rgba(255,255,255,0.65);margin-bottom:14px;}
+.idRow{display:flex;justify-content:space-between;font-size:10.5px;color:rgba(255,255,255,0.55);margin-bottom:4px;letter-spacing:0.3px;}
+.idRow b{color:var(--white);font-family:'IBM Plex Mono',monospace;font-weight:500;}
+.idBarcode{margin-top:14px;height:30px;background:repeating-linear-gradient(90deg, rgba(255,255,255,0.8) 0 2px, transparent 2px 5px);border-radius:2px;}
+
+.ticketRow{border:1px solid var(--line);border-radius:6px;padding:14px 16px;margin-bottom:10px;}
+.ticketRow .top{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;}
+.ticketRow .top b{font-size:13.5px;color:var(--navy);}
+.ticketRow p{font-size:12.5px;color:var(--ink-soft);}
+.ticketMeta{font-size:11px;color:var(--ink-soft);margin-top:8px;font-family:'IBM Plex Mono',monospace;}
+
+.mailList .mailRow{display:flex;gap:12px;padding:12px 6px;border-bottom:1px solid var(--paper-dark);cursor:pointer;}
+.mailList .mailRow:hover{background:var(--paper);}
+.mailRow .dot{width:8px;height:8px;border-radius:50%;background:var(--maroon);margin-top:6px;flex-shrink:0;}
+.mailRow .dot.read{background:var(--line);}
+.mailRow .mBody{flex:1;}
+.mailRow .mBody .from{font-size:13px;font-weight:600;color:var(--navy);}
+.mailRow .mBody .subj{font-size:12.5px;color:var(--ink);}
+.mailRow .mBody .snip{font-size:11.5px;color:var(--ink-soft);}
+.mailRow .time{font-size:10.5px;color:var(--ink-soft);white-space:nowrap;}
+
+.clearItem{display:flex;align-items:center;justify-content:between;gap:14px;padding:14px 16px;border:1px solid var(--line);border-radius:6px;margin-bottom:10px;}
+.clearItem .info{flex:1;}
+.clearItem .info b{display:block;font-size:13.5px;color:var(--navy);}
+.clearItem .info span{font-size:11.5px;color:var(--ink-soft);}
+
+.appRow{display:flex;align-items:center;gap:14px;padding:13px 14px;border:1px solid var(--line);border-radius:6px;margin-bottom:10px;}
+.appRow .aIcon{width:36px;height:36px;border-radius:7px;background:var(--paper-dark);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;}
+.appRow .aBody{flex:1;}
+.appRow .aBody b{font-size:13.5px;color:var(--navy);display:block;}
+.appRow .aBody span{font-size:11.5px;color:var(--ink-soft);}
+
+.surveyCard{border:1px solid var(--line);border-radius:7px;padding:16px;margin-bottom:12px;}
+.surveyCard .top{display:flex;justify-content:space-between;align-items:flex-start;}
+.surveyCard h4{font-size:14px;color:var(--navy);margin-bottom:4px;}
+.surveyCard p{font-size:12px;color:var(--ink-soft);margin-bottom:10px;}
+.progressTrack{height:6px;background:var(--paper-dark);border-radius:4px;overflow:hidden;margin-top:8px;}
+.progressFill{height:100%;background:var(--gold);}
+
+.busRow{display:flex;align-items:center;gap:16px;padding:13px 14px;border:1px solid var(--line);border-radius:6px;margin-bottom:9px;}
+.busRow .rt{width:44px;height:44px;border-radius:8px;background:var(--navy);color:var(--white);display:flex;align-items:center;justify-content:center;font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:12.5px;flex-shrink:0;}
+.busRow .rBody{flex:1;}
+.busRow .rBody b{font-size:13.5px;color:var(--navy);display:block;}
+.busRow .rBody span{font-size:11.5px;color:var(--ink-soft);}
+
+.libBookRow{display:flex;justify-content:space-between;align-items:center;padding:12px 4px;border-bottom:1px solid var(--paper-dark);}
+.libBookRow:last-child{border-bottom:none;}
+.libBookRow b{font-size:13px;color:var(--navy);display:block;}
+.libBookRow span{font-size:11.5px;color:var(--ink-soft);}
+
+.searchBar{display:flex;gap:10px;margin-bottom:18px;}
+.searchBar input{flex:1;padding:11px 14px;border:1.5px solid var(--line);border-radius:5px;font-size:13.5px;}
+.searchBar input:focus{outline:none;border-color:var(--navy);}
+
+.noteBanner{background:var(--navy-pale);border-left:3px solid var(--navy);padding:12px 16px;border-radius:0 6px 6px 0;font-size:12.5px;color:var(--navy);margin-bottom:18px;}
+
+@media (max-width:860px){
+  #appShell.active{display:block;}
+  .sidebar{position:fixed;left:-260px;top:0;width:250px;z-index:50;transition:left .2s;box-shadow:0 0 40px rgba(0,0,0,0.3);}
+  .sidebar.open{left:0;}
+  .content{padding:20px 16px 60px;}
+  .grid4,.grid3,.grid2,.formGrid{grid-template-columns:1fr;}
+  .topbar{padding:12px 16px;}
+  .menuBtn{display:inline-flex !important;}
+}
+.menuBtn{display:none;background:none;border:1px solid var(--line);border-radius:5px;padding:7px 10px;margin-right:10px;}
+
+.siteFooter{
+  border-top:1px solid var(--line);
+  background:var(--white);
+  padding:14px 30px;
+}
+.siteFooter-inner{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  align-items:center;
+  font-size:11.5px;
+  color:var(--ink-soft);
+}
+.siteFooter-inner b{color:var(--navy);}
+.siteFooter-inner .dot{color:var(--line);}
+@media (max-width:860px){
+  .siteFooter{padding:12px 16px;}
+  .siteFooter-inner{font-size:11px;}
+}
+
+/* ---------- toast ---------- */
+#toast{
+  position:fixed;
+  bottom:24px;right:24px;
+  background:var(--navy);
+  color:var(--white);
+  padding:13px 20px;
+  border-radius:6px;
+  font-size:13px;
+  font-weight:600;
+  box-shadow:0 10px 30px rgba(0,0,0,0.25);
+  transform:translateY(20px);
+  opacity:0;
+  pointer-events:none;
+  transition:all .25s;
+  z-index:999;
+  border-left:4px solid var(--gold);
+}
+#toast.show{transform:translateY(0);opacity:1;}
+</style>
+</head>
+<body>
+
+<!-- ================= LOGIN SCREEN ================= -->
+<div id="loginScreen">
+  <div class="loginLeft">
+    <img src="logo.png" alt="Unique Student Cooperation logo" style="width:190px;height:190px;object-fit:contain;filter:drop-shadow(0 8px 24px rgba(0,0,0,0.35));">
+    <h1>Unique Student Cooperation</h1>
+    <p>Student Information &amp; Services Portal</p>
+    <div class="loginStats">
+      <div><b>21</b><span>Departments</span></div>
+      <div><b>7,400+</b><span>Enrolled</span></div>
+      <div><b>96%</b><span>Uptime</span></div>
+    </div>
+  </div>
+
+  <div class="loginRight">
+    <div class="loginBox">
+      <div class="eyebrow">Student Sign In</div>
+      <h2>Welcome back</h2>
+      <p class="sub">Enter your registration number and password to access your student dashboard.</p>
+      <div class="loginError" id="loginError">Please enter both your registration number and password to continue.</div>
+      <div class="field">
+        <label>Registration Number</label>
+        <input type="text" id="regNoInput" placeholder="e.g. FA22-BCS-045" autocomplete="username">
+      </div>
+      <div class="field">
+        <label>Password</label>
+        <input type="password" id="passInput" placeholder="••••••••" autocomplete="current-password">
+      </div>
+      <div class="rowBetween">
+        <label><input type="checkbox" checked style="margin:0;"> Keep me signed in</label>
+        <a href="#">Forgot password?</a>
+      </div>
+      <button class="btnPrimary" onclick="doLogin()">Sign In to Portal</button>
+      <p class="loginNote">This is a demonstration portal — enter any registration number and password to explore the dashboard.<br>© 2026 Unique Student Cooperation. All rights reserved.<br>Developed by <b>Asad Zafar</b> · Student of Information Technology, The Islamia University of Bahawalpur · 0326-5593756</p>
+    </div>
+  </div>
+</div>
+
+<!-- ================= APP SHELL ================= -->
+<div id="appShell">
+  <div class="sidebar" id="sidebar">
+    <div class="sbBrand">
+      <img src="logo.png" alt="USC logo" style="width:38px;height:38px;object-fit:contain;flex-shrink:0;">
+      <div><b>Unique Student<br>Cooperation</b><span>STUDENT PORTAL</span></div>
+    </div>
+
+    <div class="navGroupLabel">Overview</div>
+    <div class="navItem active" data-panel="dashboard"><span class="navBadge">DB</span>Dashboard</div>
+    <div class="navItem" data-panel="profile"><span class="navBadge">PR</span>My Profile</div>
+    <div class="navItem" data-panel="idcard"><span class="navBadge">ID</span>Student Card</div>
+
+    <div class="navGroupLabel">Academics</div>
+    <div class="navItem" data-panel="transcript"><span class="navBadge">TR</span>Transcript</div>
+    <div class="navItem" data-panel="position"><span class="navBadge">PS</span>Semester Position</div>
+    <div class="navItem" data-panel="timetable"><span class="navBadge">TT</span>Time Table</div>
+    <div class="navItem" data-panel="lms"><span class="navBadge">CM</span>LMS &amp; Course Material</div>
+    <div class="navItem" data-panel="thesis"><span class="navBadge">TH</span>Thesis Submission</div>
+    <div class="navItem" data-panel="survey"><span class="navBadge">SV</span>My Survey</div>
+
+    <div class="navGroupLabel">Requests</div>
+    <div class="navItem" data-panel="repeat"><span class="navBadge">CR</span>Course Repeat</div>
+    <div class="navItem" data-panel="complaint"><span class="navBadge">CT</span>Complaint vs Teacher</div>
+    <div class="navItem" data-panel="scholarship"><span class="navBadge">SC</span>Scholarship</div>
+    <div class="navItem" data-panel="documents"><span class="navBadge">UD</span>Upload Documents</div>
+    <div class="navItem" data-panel="myapps"><span class="navBadge">MA</span>My Applications</div>
+    <div class="navItem" data-panel="clearance"><span class="navBadge">CL</span>My Clearance</div>
+
+    <div class="navGroupLabel">Finance &amp; Services</div>
+    <div class="navItem" data-panel="fee"><span class="navBadge">FV</span>Fee Vouchers</div>
+    <div class="navItem" data-panel="library"><span class="navBadge">LB</span>Library</div>
+    <div class="navItem" data-panel="transport"><span class="navBadge">TS</span>Transport Schedule</div>
+    <div class="navItem" data-panel="email"><span class="navBadge">EM</span>Email Service</div>
+    <div class="navItem" data-panel="tickets"><span class="navBadge">ST</span>Support Tickets</div>
+
+    <div class="sbFooter">
+      <button class="logoutBtn" onclick="doLogout()">Sign Out</button>
+    </div>
+  </div>
+
+  <div class="mainWrap">
+    <div class="topbar">
+      <div style="display:flex;align-items:center;">
+        <button class="menuBtn" onclick="document.getElementById('sidebar').classList.toggle('open')">☰</button>
+        <div>
+          <h1 id="topTitle">Dashboard</h1>
+          <div class="crumb" id="topCrumb">USC PORTAL / DASHBOARD</div>
+        </div>
+      </div>
+      <div class="topRight">
+        <div class="topPill" id="regNoPill" class="mono">FA22-BCS-045</div>
+        <div class="avatarChip">
+          <div class="circle">HR</div>
+          <span>Hassan Raza</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="content" id="content">
+      <!-- Panels injected by JS -->
+    </div>
+
+    <div class="siteFooter">
+      <div class="siteFooter-inner">
+        <span>© 2026 Unique Student Cooperation. All rights reserved.</span>
+        <span class="dot">·</span>
+        <span>Developed by <b>Asad Zafar</b>, Student of Information Technology at The Islamia University of Bahawalpur</span>
+        <span class="dot">·</span>
+        <span>📞 0326-5593756</span>
+        <span class="dot">·</span>
+        <span>📍 Multan</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   DATA
+============================================================ */
+const student = {
+  name: "Hassan Raza",
+  regNo: "FA22-BCS-045",
+  fatherName: "Muhammad Raza",
+  program: "BS Computer Science",
+  department: "Faculty of Computer Science & Information Technology",
+  campus: "Main Campus",
+  session: "Fall 2022 – Fall 2026",
+  currentSemester: "6th Semester",
+  cnic: "36302-1234567-1",
+  dob: "14-Mar-2004",
+  phone: "0300-1234567",
+  email: "hassan.raza@usc.edu.pk",
+  address: "House 21, Street 5, Model Town, Multan"
+};
+
+const gradePoints = {"A":4.0,"A-":3.7,"B+":3.3,"B":3.0,"B-":2.7,"C+":2.3,"C":2.0,"D":1.0,"F":0.0};
+
+const semesters = [
+ {n:1,title:"Fall 2022",courses:[
+   ["CS-101","Introduction to Computing",3,"A"],
+   ["CS-102","Programming Fundamentals",4,"A-"],
+   ["MT-101","Calculus & Analytical Geometry",3,"B+"],
+   ["EN-101","Functional English",3,"A"],
+   ["PS-101","Pakistan Studies",2,"A-"],
+ ]},
+ {n:2,title:"Spring 2023",courses:[
+   ["CS-103","Object Oriented Programming",4,"A-"],
+   ["CS-104","Discrete Structures",3,"B+"],
+   ["MT-102","Multivariable Calculus",3,"B"],
+   ["EN-102","Communication Skills",3,"A"],
+   ["SS-101","Islamic Studies",2,"A"],
+ ]},
+ {n:3,title:"Fall 2023",courses:[
+   ["CS-201","Data Structures & Algorithms",4,"A"],
+   ["CS-202","Digital Logic Design",3,"B+"],
+   ["CS-203","Database Systems",3,"A-"],
+   ["MT-201","Linear Algebra",3,"B"],
+   ["ST-201","Probability & Statistics",3,"B+"],
+ ]},
+ {n:4,title:"Spring 2024",courses:[
+   ["CS-204","Computer Organization & Architecture",3,"B+"],
+   ["CS-205","Operating Systems",4,"A-"],
+   ["CS-206","Software Engineering",3,"A"],
+   ["CS-207","Web Technologies",3,"A"],
+   ["MG-201","Introduction to Management",2,"A-"],
+ ]},
+ {n:5,title:"Fall 2024",courses:[
+   ["CS-301","Computer Networks",3,"B+"],
+   ["CS-302","Theory of Automata",3,"B"],
+   ["CS-303","Artificial Intelligence",3,"A-"],
+   ["CS-304","Design & Analysis of Algorithms",3,"A"],
+   ["CS-305","Human Computer Interaction",3,"A-"],
+ ]},
+ {n:6,title:"Spring 2025",courses:[
+   ["CS-306","Computer Graphics",3,"B+"],
+   ["CS-307","Information Security",3,"A-"],
+   ["CS-308","Mobile Application Development",3,"A"],
+   ["CS-309","Compiler Construction",3,"B"],
+   ["CS-310","Parallel & Distributed Computing",3,"B+"],
+ ]},
+ {n:7,title:"Fall 2025",courses:[
+   ["CS-401","Cloud Computing",3,"A-"],
+   ["CS-402","Machine Learning",3,"A"],
+   ["CS-403","Final Year Project - I",3,"A-"],
+   ["CS-404","Professional Practices",2,"A"],
+   ["CS-405","Elective: Data Science",3,"B+"],
+ ]},
+ {n:8,title:"Spring 2026",courses:[
+   ["CS-406","Final Year Project - II",3,"A"],
+   ["CS-407","Entrepreneurship",2,"A-"],
+   ["CS-408","Elective: Blockchain Systems",3,"A-"],
+   ["CS-409","Elective: DevOps & Deployment",3,"B+"],
+ ]},
+];
+
+function computeSGPA(courses){
+  let totalPts=0, totalCr=0;
+  courses.forEach(c=>{const cr=c[2],g=c[3]; totalPts+=gradePoints[g]*cr; totalCr+=cr;});
+  return {sgpa:(totalPts/totalCr), credits:totalCr, points:totalPts};
+}
+let cumPts=0, cumCr=0;
+const semResults = semesters.map(s=>{
+  const r = computeSGPA(s.courses);
+  cumPts += r.points; cumCr += r.credits;
+  return {...s, sgpa:r.sgpa, credits:r.credits, cgpa:(cumPts/cumCr)};
+});
+const finalCGPA = semResults[semResults.length-1].cgpa;
+
+const positions = [4,3,6,2,3,5,2,3]; // class rank per semester
+const classSizes = [64,61,60,58,57,55,54,52];
+
+/* ============================================================
+   MUTABLE APP STATE (makes the portal fully functional —
+   items can be added / removed from these arrays and every
+   affected panel re-renders live)
+============================================================ */
+let uidCounter = 1000;
+const nextId = () => (uidCounter++).toString();
+function todayStr(){
+  return new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}).replace(/ /g,'-');
+}
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(window.__toastTimer);
+  window.__toastTimer = setTimeout(()=>t.classList.remove('show'), 2800);
+}
+
+let repeatRequests = [
+  {id:nextId(), course:"ST-201 — Probability & Statistics", sem:"Spring 2025", status:"green", label:"Approved"},
+];
+
+let complaints = []; // application against teacher log
+
+let scholarshipApps = [
+  {id:nextId(), name:"Merit Scholarship — Spring 2026", date:"28-Jan-2026", status:"green", label:"Approved"},
+  {id:nextId(), name:"Need-Based Aid — Fall 2026", date:"18-Jul-2026", status:"gold", label:"Documents Pending"},
+];
+
+let documents = [
+  {id:nextId(), name:"CNIC_Copy.pdf", type:"PDF", date:"02-Feb-2023", status:"green", label:"Verified"},
+  {id:nextId(), name:"Domicile_Certificate.pdf", type:"PDF", date:"02-Feb-2023", status:"green", label:"Verified"},
+  {id:nextId(), name:"Matric_Result.jpg", type:"JPG", date:"02-Feb-2023", status:"green", label:"Verified"},
+  {id:nextId(), name:"Income_Certificate.pdf", type:"PDF", date:"18-Jul-2026", status:"gold", label:"Under Review"},
+];
+
+let tickets = [
+  {id:nextId(), code:"TCK-3021", title:"LMS material not loading for CS-401", desc:"Course material for week 8 shows a broken link on the LMS page.", category:"LMS Access", priority:"Medium", status:"gold", label:"Open", date:"26-Jul-2026"},
+  {id:nextId(), code:"TCK-2988", title:"Duplicate entry on fee voucher", desc:"Spring 2026 voucher shows a duplicate lab charge that needs correction.", category:"Fee Voucher Issue", priority:"High", status:"navy", label:"In Progress", date:"20-Jul-2026"},
+  {id:nextId(), code:"TCK-2870", title:"Password reset not working", desc:"Reset link expired before I could use it.", category:"Portal / Login Issue", priority:"Low", status:"green", label:"Resolved", date:"02-Jun-2026"},
+];
+
+let feeVouchers = [
+  {id:nextId(), sem:"Spring 2026", due:"12-Aug-2026", amt:68500, status:"red", label:"Unpaid"},
+  {id:nextId(), sem:"Fall 2025", due:"14-Feb-2026", amt:66000, status:"green", label:"Paid"},
+  {id:nextId(), sem:"Spring 2025", due:"11-Aug-2025", amt:66000, status:"green", label:"Paid"},
+  {id:nextId(), sem:"Fall 2024", due:"13-Feb-2025", amt:64500, status:"green", label:"Paid"},
+  {id:nextId(), sem:"Spring 2024", due:"12-Aug-2024", amt:64500, status:"green", label:"Paid"},
+];
+
+let mails = [
+  {id:nextId(), from:"Registrar Office",subj:"Spring 2026 Fee Voucher Reminder",snip:"This is a reminder that your fee voucher is due on 12-Aug-2026...",time:"2h ago",read:false},
+  {id:nextId(), from:"Dr. Sana Malik",subj:"Re: Chapter 3 Feedback",snip:"I've reviewed your methodology chapter, please revise section 3.2...",time:"1d ago",read:false},
+  {id:nextId(), from:"USC Library",subj:"Book Due Reminder",snip:"Artificial Intelligence: A Modern Approach is due on 05-Aug-2026...",time:"2d ago",read:true},
+  {id:nextId(), from:"Career Services",subj:"Upcoming Job Fair — 15th August",snip:"20+ companies will be visiting campus for the Fall recruitment drive...",time:"4d ago",read:true},
+  {id:nextId(), from:"Department of CS & IT",subj:"FYP Demo Day Schedule",snip:"Final Year Project demonstrations are scheduled for 20-Aug-2026...",time:"6d ago",read:true},
+];
+
+/* ============================================================
+   NAVIGATION
+============================================================ */
+const titles = {
+  dashboard:["Dashboard","OVERVIEW"],
+  profile:["My Profile","ACADEMICS / PROFILE"],
+  idcard:["Student Card","ACADEMICS / STUDENT CARD"],
+  transcript:["Academic Transcript","ACADEMICS / TRANSCRIPT"],
+  position:["Semester-wise Position","ACADEMICS / SGPA & RANK"],
+  timetable:["Time Table","ACADEMICS / TIME TABLE"],
+  lms:["LMS & Course Material","ACADEMICS / LMS"],
+  thesis:["Thesis Submission","ACADEMICS / THESIS"],
+  survey:["My Survey","ACADEMICS / SURVEYS"],
+  repeat:["Course Repeat Application","REQUESTS / COURSE REPEAT"],
+  complaint:["Application Against Teacher","REQUESTS / COMPLAINT"],
+  scholarship:["Scholarship","REQUESTS / SCHOLARSHIP"],
+  documents:["Upload Documents","REQUESTS / DOCUMENTS"],
+  myapps:["My Applications","REQUESTS / STATUS"],
+  clearance:["My Clearance","REQUESTS / CLEARANCE"],
+  fee:["Fee Vouchers","FINANCE / VOUCHERS"],
+  library:["Library","SERVICES / LIBRARY"],
+  transport:["Transport Schedule","SERVICES / TRANSPORT"],
+  email:["Email Service","SERVICES / WEBMAIL"],
+  tickets:["Support Tickets","SERVICES / HELP DESK"],
+};
+
+function switchPanel(key){
+  document.querySelectorAll('.navItem').forEach(n=>n.classList.toggle('active', n.dataset.panel===key));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  const target = document.getElementById('panel-'+key);
+  if(target) target.classList.add('active');
+  document.getElementById('topTitle').textContent = titles[key][0];
+  document.getElementById('topCrumb').textContent = titles[key][1];
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('content').scrollIntoView({behavior:'instant', block:'start'});
+  window.scrollTo(0,0);
+}
+document.querySelectorAll('.navItem').forEach(n=>{
+  n.addEventListener('click', ()=>switchPanel(n.dataset.panel));
+});
+
+/* ============================================================
+   LOGIN / LOGOUT
+============================================================ */
+function doLogin(){
+  const reg = document.getElementById('regNoInput').value.trim();
+  const pass = document.getElementById('passInput').value.trim();
+  if(!reg || !pass){
+    document.getElementById('loginError').style.display='block';
+    return;
+  }
+  document.getElementById('loginError').style.display='none';
+  document.getElementById('regNoPill').textContent = reg.toUpperCase();
+  document.getElementById('loginScreen').style.display='none';
+  document.getElementById('appShell').classList.add('active');
+  buildAllPanels();
+  switchPanel('dashboard');
+}
+function doLogout(){
+  document.getElementById('appShell').classList.remove('active');
+  document.getElementById('loginScreen').style.display='grid';
+  document.getElementById('regNoInput').value='';
+  document.getElementById('passInput').value='';
+}
+document.getElementById('passInput').addEventListener('keydown', e=>{ if(e.key==='Enter') doLogin(); });
+
+/* ============================================================
+   PANEL BUILDERS
+============================================================ */
+function el(html){ const d=document.createElement('div'); d.innerHTML=html.trim(); return d.firstChild; }
+
+function buildDashboard(){
+  const latest = semResults[semResults.length-1];
+  return `
+  <div class="pageHead">
+    <div class="eyebrow">Welcome back</div>
+    <h2>Assalam-o-Alaikum, ${student.name.split(' ')[0]}</h2>
+    <p>Here's a snapshot of your academic standing and pending items for ${student.currentSemester}.</p>
+  </div>
+  <div class="grid4">
+    <div class="statCard"><div class="lbl">Current CGPA</div><div class="val">${finalCGPA.toFixed(2)}</div><div class="sub">out of 4.00</div></div>
+    <div class="statCard"><div class="lbl">Latest SGPA</div><div class="val">${latest.sgpa.toFixed(2)}</div><div class="sub">${latest.title}</div></div>
+    <div class="statCard"><div class="lbl">Class Position</div><div class="val">${positions[7]} / ${classSizes[7]}</div><div class="sub">Current semester rank</div></div>
+    <div class="statCard"><div class="lbl">Fee Status</div><div class="val" style="color:var(--danger);font-size:20px;">Due</div><div class="sub">Voucher #2026-SP-045</div></div>
+  </div>
+  <div class="grid2">
+    <div class="card">
+      <h3>Pending Actions <span class="tag">4 items</span></h3>
+      <div class="appRow"><div class="aIcon">💳</div><div class="aBody"><b>Spring 2026 Fee Voucher</b><span>Due 12-Aug-2026 · Rs. 68,500</span></div><span class="pill red">Unpaid</span></div>
+      <div class="appRow"><div class="aIcon">📝</div><div class="aBody"><b>Course Evaluation Survey</b><span>CS-406 & CS-408 pending</span></div><span class="pill gold">Pending</span></div>
+      <div class="appRow"><div class="aIcon">📄</div><div class="aBody"><b>Thesis Draft Chapter 3</b><span>Supervisor review requested</span></div><span class="pill navy">In Review</span></div>
+      <div class="appRow"><div class="aIcon">🎓</div><div class="aBody"><b>Merit Scholarship Renewal</b><span>Documents required</span></div><span class="pill gold">Action Needed</span></div>
+    </div>
+    <div class="card">
+      <h3>Announcements <span class="tag">USC Registrar</span></h3>
+      <div class="noteBanner">Spring 2026 fee vouchers are now due. Late payment after 12-Aug-2026 will incur a 5% surcharge.</div>
+      <div class="noteBanner" style="background:var(--maroon-pale);border-left-color:var(--maroon);color:var(--maroon);">Final Year Project (CS-406) demo day scheduled for 20-Aug-2026 in the CS Auditorium.</div>
+      <div class="noteBanner">Library book returns extended to 05-Aug-2026 for finalists.</div>
+    </div>
+  </div>
+  <div class="card">
+    <h3>Today's Classes <span class="tag">${student.currentSemester} — Spring 2026</span></h3>
+    <table>
+      <tr><th>Time</th><th>Course</th><th>Room</th><th>Instructor</th></tr>
+      <tr><td class="mono">09:00 – 10:20</td><td>Machine Learning (CS-402)</td><td>Lab-3, CS Block</td><td>Dr. Ayesha Farooq</td></tr>
+      <tr><td class="mono">10:30 – 11:50</td><td>Cloud Computing (CS-401)</td><td>Room 214</td><td>Mr. Bilal Ahmed</td></tr>
+      <tr><td class="mono">13:00 – 15:50</td><td>Final Year Project - I (CS-403)</td><td>Project Lab</td><td>Dr. Sana Malik</td></tr>
+    </table>
+  </div>`;
+}
+
+function buildProfile(){
+  return `
+  <div class="pageHead"><div class="eyebrow">Academics</div><h2>My Profile</h2><p>Your official student record on file with the Registrar's Office.</p></div>
+  <div class="grid2">
+    <div class="card">
+      <h3>Personal Information</h3>
+      <table>
+        <tr><td style="color:var(--ink-soft);width:40%;">Full Name</td><td><b>${student.name}</b></td></tr>
+        <tr><td style="color:var(--ink-soft);">Father's Name</td><td>${student.fatherName}</td></tr>
+        <tr><td style="color:var(--ink-soft);">CNIC / B-Form</td><td class="mono">${student.cnic}</td></tr>
+        <tr><td style="color:var(--ink-soft);">Date of Birth</td><td>${student.dob}</td></tr>
+        <tr><td style="color:var(--ink-soft);">Contact Number</td><td class="mono">${student.phone}</td></tr>
+        <tr><td style="color:var(--ink-soft);">Email Address</td><td>${student.email}</td></tr>
+        <tr><td style="color:var(--ink-soft);">Permanent Address</td><td>${student.address}</td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <h3>Academic Information</h3>
+      <table>
+        <tr><td style="color:var(--ink-soft);width:40%;">Registration No.</td><td class="mono"><b>${student.regNo}</b></td></tr>
+        <tr><td style="color:var(--ink-soft);">Programme</td><td>${student.program}</td></tr>
+        <tr><td style="color:var(--ink-soft);">Department</td><td>${student.department}</td></tr>
+        <tr><td style="color:var(--ink-soft);">Campus</td><td>${student.campus}</td></tr>
+        <tr><td style="color:var(--ink-soft);">Session</td><td>${student.session}</td></tr>
+        <tr><td style="color:var(--ink-soft);">Current Semester</td><td>${student.currentSemester}</td></tr>
+        <tr><td style="color:var(--ink-soft);">Cumulative GPA</td><td><b style="color:var(--navy);">${finalCGPA.toFixed(2)}</b></td></tr>
+      </table>
+      <div style="margin-top:16px;"><button class="btn outline small">Request Profile Update</button></div>
+    </div>
+  </div>`;
+}
+
+function buildIdCard(){
+  return `
+  <div class="pageHead"><div class="eyebrow">Academics</div><h2>Digital Student Card</h2><p>Present this virtual card, or your printed card, for on-campus identification.</p></div>
+  <div style="display:flex;gap:30px;flex-wrap:wrap;align-items:flex-start;">
+    <div class="idCard">
+      <div class="idCardTop">
+        <img src="logo.png" alt="USC logo" style="width:32px;height:32px;object-fit:contain;">
+        <div><b>UNIQUE STUDENT<br>COOPERATION</b><span>OFFICIAL STUDENT ID</span></div>
+      </div>
+      <div class="idPhoto">HR</div>
+      <div class="idName">${student.name}</div>
+      <div class="idProg">${student.program}</div>
+      <div class="idRow"><span>Reg. No.</span><b>${student.regNo}</b></div>
+      <div class="idRow"><span>Department</span><b>CS &amp; IT</b></div>
+      <div class="idRow"><span>Valid Through</span><b>06 / 2026 – 06 / 2027</b></div>
+      <div class="idRow"><span>Blood Group</span><b>B+</b></div>
+      <div class="idBarcode"></div>
+    </div>
+    <div class="card" style="flex:1;min-width:280px;">
+      <h3>Card Services</h3>
+      <p style="font-size:12.5px;color:var(--ink-soft);margin-bottom:14px;">Your student card doubles as your library card, transport pass and cafeteria wallet.</p>
+      <div class="docRow"><div class="left"><div class="docIcon">PDF</div><div><b style="font-size:13px;">Download Printable Card</b></div></div><button class="btn small outline">Download</button></div>
+      <div class="docRow"><div class="left"><div class="docIcon">⚠</div><div><b style="font-size:13px;">Report Lost / Damaged Card</b></div></div><button class="btn small maroon">Report</button></div>
+      <div class="docRow"><div class="left"><div class="docIcon">💳</div><div><b style="font-size:13px;">Cafeteria Wallet Balance</b></div></div><span class="pill green">Rs. 1,240</span></div>
+    </div>
+  </div>`;
+}
+
+function buildTranscript(){
+  let semBlocks = semResults.map(s=>`
+    <div class="card">
+      <h3>Semester ${s.n} — ${s.title} <span class="tag">SGPA ${s.sgpa.toFixed(2)}</span></h3>
+      <table>
+        <tr><th>Code</th><th>Course Title</th><th>Cr. Hrs</th><th>Grade</th><th>Points</th></tr>
+        ${s.courses.map(c=>`<tr><td class="mono">${c[0]}</td><td>${c[1]}</td><td>${c[2]}</td><td><span class="pill navy">${c[3]}</span></td><td>${(gradePoints[c[3]]*c[2]).toFixed(1)}</td></tr>`).join('')}
+      </table>
+      <div style="display:flex;justify-content:flex-end;gap:26px;margin-top:12px;font-size:12.5px;color:var(--ink-soft);">
+        <span>Credit Hours: <b style="color:var(--navy);">${s.credits}</b></span>
+        <span>SGPA: <b style="color:var(--navy);">${s.sgpa.toFixed(2)}</b></span>
+        <span>CGPA (cumulative): <b style="color:var(--navy);">${s.cgpa.toFixed(2)}</b></span>
+      </div>
+    </div>`).join('');
+
+  return `
+  <div class="pageHead"><div class="eyebrow">Academics</div><h2>Academic Transcript</h2><p>Unofficial transcript covering all 8 semesters of ${student.program}. For an official stamped copy, request via My Applications.</p></div>
+  <div class="grid4" style="margin-bottom:26px;">
+    <div class="statCard"><div class="lbl">Total Credit Hours</div><div class="val">${semResults.reduce((a,s)=>a+s.credits,0)}</div></div>
+    <div class="statCard"><div class="lbl">Semesters Completed</div><div class="val">8 / 8</div></div>
+    <div class="statCard"><div class="lbl">Final CGPA</div><div class="val">${finalCGPA.toFixed(2)}</div></div>
+    <div class="statCard"><div class="lbl">Degree Status</div><div class="val" style="font-size:18px;color:var(--success);">Completed</div></div>
+  </div>
+  ${semBlocks}
+  <div style="text-align:right;"><button class="btn primary">Request Official Transcript</button></div>`;
+}
+
+function buildPosition(){
+  const maxSgpa = 4.0;
+  const bars = semResults.map((s,i)=>`
+    <div class="sgpaBarWrap">
+      <div class="sgpaBar" style="height:${(s.sgpa/maxSgpa*160)}px;"><span class="val">${s.sgpa.toFixed(2)}</span></div>
+      <div class="sgpaLbl">Sem ${s.n}<small>${s.title.split(' ')[0]}</small></div>
+    </div>`).join('');
+
+  const posRows = semResults.map((s,i)=>`
+    <tr><td>Semester ${s.n} — ${s.title}</td><td class="mono">${s.sgpa.toFixed(2)}</td><td class="mono">${s.cgpa.toFixed(2)}</td><td><span class="pill gold">Rank ${positions[i]} of ${classSizes[i]}</span></td></tr>`).join('');
+
+  return `
+  <div class="pageHead"><div class="eyebrow">Academics</div><h2>Semester-wise Position</h2><p>Your class rank each semester, calculated from SGPA among all students of ${student.program}, ${student.session.split('–')[0].trim()} session.</p></div>
+  <div class="card">
+    <h3>SGPA Trend <span class="tag">Scale: 4.00</span></h3>
+    <div class="sgpaChart">${bars}</div>
+  </div>
+  <div class="card">
+    <h3>Class Standing by Semester</h3>
+    <table><tr><th>Semester</th><th>SGPA</th><th>CGPA</th><th>Class Position</th></tr>${posRows}</table>
+  </div>`;
+}
+
+function buildTimetable(){
+  const days=["Mon","Tue","Wed","Thu","Fri"];
+  const rows=[
+    {time:"09:00–10:20", slots:["Machine Learning\nRoom 214","—","Machine Learning\nRoom 214","—","Cloud Computing\nRoom 214"]},
+    {time:"10:30–11:50", slots:["Cloud Computing\nRoom 214","Professional Practices\nRoom 108","Cloud Computing\nRoom 214","Professional Practices\nRoom 108","—"]},
+    {time:"12:00–13:00", slots:["—","—","—","—","—"]},
+    {time:"13:00–15:50", slots:["FYP-I Lab\nProject Lab||lab","—","FYP-I Lab\nProject Lab||lab","Data Science Elective\nRoom 301","FYP-I Lab\nProject Lab||lab"]},
+  ];
+  let grid = `<div class="timetable"><div></div>${days.map(d=>`<div class="head">${d}</div>`).join('')}`;
+  rows.forEach(r=>{
+    grid += `<div class="timeCell">${r.time}</div>`;
+    r.slots.forEach(s=>{
+      if(s==="—"){ grid+=`<div class="ttEmpty"></div>`; }
+      else{
+        const isLab = s.includes('||lab');
+        const clean = s.replace('||lab','');
+        const [course,room] = clean.split('\n');
+        grid += `<div class="ttSlot ${isLab?'lab':''}"><b>${course}</b><span>${room}</span></div>`;
+      }
+    });
+  });
+  grid += `</div>`;
+
+  return `
+  <div class="pageHead"><div class="eyebrow">Academics</div><h2>Weekly Time Table</h2><p>${student.currentSemester === '6th Semester' ? 'Spring 2026' : student.currentSemester} class schedule — Section A, ${student.department}.</p></div>
+  <div class="card">${grid}</div>`;
+}
+
+function buildLMS(){
+  const courses = [
+    {code:"CS-402", name:"Machine Learning", instr:"Dr. Ayesha Farooq", items:5, progress:78},
+    {code:"CS-401", name:"Cloud Computing", instr:"Mr. Bilal Ahmed", items:4, progress:60},
+    {code:"CS-403", name:"Final Year Project - I", instr:"Dr. Sana Malik", items:2, progress:45},
+    {code:"CS-404", name:"Professional Practices", instr:"Ms. Hira Nasir", items:6, progress:90},
+    {code:"CS-405", name:"Data Science Elective", instr:"Dr. Umer Siddiqui", items:5, progress:70},
+  ];
+  const cards = courses.map(c=>`
+    <div class="card">
+      <h3>${c.name} <span class="tag">${c.code}</span></h3>
+      <p style="font-size:12.5px;color:var(--ink-soft);margin-bottom:10px;">Instructor: ${c.instr} · ${c.items} material items uploaded</p>
+      <div class="progressTrack"><div class="progressFill" style="width:${c.progress}%;"></div></div>
+      <div style="display:flex;justify-content:space-between;margin-top:14px;align-items:center;">
+        <span style="font-size:11.5px;color:var(--ink-soft);">Course completion: ${c.progress}%</span>
+        <button class="btn outline small">Open Course Material</button>
+      </div>
+    </div>`).join('');
+  return `
+  <div class="pageHead"><div class="eyebrow">Academics</div><h2>LMS &amp; Course Material</h2><p>Access lecture slides, recorded sessions, assignments and quizzes for your enrolled courses.</p></div>
+  ${cards}`;
+}
+
+function buildThesis(){
+  return `
+  <div class="pageHead"><div class="eyebrow">Academics</div><h2>Thesis / Final Year Project Submission</h2><p>Track and submit your FYP milestones for review by your supervisor, Dr. Sana Malik.</p></div>
+  <div class="stepBar">
+    <div class="step done">Proposal</div>
+    <div class="step done">Chapter 1–2</div>
+    <div class="step done">Chapter 3</div>
+    <div class="step">Chapter 4–5</div>
+    <div class="step">Final Defense</div>
+  </div>
+  <div class="grid2">
+    <div class="card">
+      <h3>Submit New Chapter / Draft</h3>
+      <div class="fGroup" style="margin-bottom:14px;"><label>Project Title</label><input type="text" value="Predictive Maintenance Using Machine Learning for Industrial IoT" readonly></div>
+      <div class="fGroup" style="margin-bottom:14px;"><label>Milestone</label>
+        <select><option>Chapter 4 — Implementation</option><option>Chapter 5 — Results & Conclusion</option><option>Final Draft</option></select>
+      </div>
+      <div class="uploadBox"><b>Drag & drop your thesis file here</b>Supports .docx, .pdf up to 25MB</div>
+      <button class="btn primary">Submit to Supervisor</button>
+    </div>
+    <div class="card">
+      <h3>Submission History <span class="tag">3 submissions</span></h3>
+      <div class="docRow"><div class="left"><div class="docIcon">C3</div><div><b style="font-size:13px;">Chapter 3 — Methodology</b><div style="font-size:11px;color:var(--ink-soft);">Submitted 12-Jul-2026</div></div></div><span class="pill navy">In Review</span></div>
+      <div class="docRow"><div class="left"><div class="docIcon">C2</div><div><b style="font-size:13px;">Chapter 1–2 — Intro & Lit. Review</b><div style="font-size:11px;color:var(--ink-soft);">Approved 02-Jun-2026</div></div></div><span class="pill green">Approved</span></div>
+      <div class="docRow"><div class="left"><div class="docIcon">PR</div><div><b style="font-size:13px;">Proposal Document</b><div style="font-size:11px;color:var(--ink-soft);">Approved 14-Feb-2026</div></div></div><span class="pill green">Approved</span></div>
+    </div>
+  </div>`;
+}
+
+function buildSurvey(){
+  const surveys = [
+    {course:"CS-402 — Machine Learning", instr:"Dr. Ayesha Farooq", status:"pending", pct:0},
+    {course:"CS-408 — Blockchain Systems", instr:"Dr. Umer Siddiqui", status:"pending", pct:0},
+    {course:"CS-401 — Cloud Computing", instr:"Mr. Bilal Ahmed", status:"done", pct:100},
+    {course:"CS-406 — Final Year Project II", instr:"Dr. Sana Malik", status:"progress", pct:50},
+  ];
+  const cards = surveys.map(s=>`
+    <div class="surveyCard">
+      <div class="top">
+        <div><h4>Course Evaluation — ${s.course}</h4><p>Instructor: ${s.instr} · Anonymous, takes ~3 minutes</p></div>
+        ${s.status==='done'?'<span class="pill green">Completed</span>':s.status==='progress'?'<span class="pill gold">In Progress</span>':'<span class="pill red">Not Started</span>'}
+      </div>
+      <div class="progressTrack"><div class="progressFill" style="width:${s.pct}%;"></div></div>
+      <div style="margin-top:12px;">${s.status==='done' ? '<button class="btn small outline" disabled>Already Submitted</button>' : '<button class="btn small primary">'+(s.status==='progress'?'Continue Survey':'Start Survey')+'</button>'}</div>
+    </div>`).join('');
+  return `
+  <div class="pageHead"><div class="eyebrow">Academics</div><h2>My Survey</h2><p>End-of-semester course evaluation surveys help departments improve teaching quality.</p></div>
+  ${cards}`;
+}
+
+function renderRepeatTable(){
+  const box = document.getElementById('repeatTableBox');
+  if(!box) return;
+  box.innerHTML = repeatRequests.map(r=>`
+    <tr>
+      <td>${r.course}</td><td>${r.sem}</td>
+      <td><span class="pill ${r.status}">${r.label}</span></td>
+      <td><button class="btn small outline" onclick="removeRepeatRequest('${r.id}')">Withdraw</button></td>
+    </tr>`).join('') || `<tr><td colspan="4" style="color:var(--ink-soft);">No repeat requests submitted yet.</td></tr>`;
+}
+function submitRepeatRequest(){
+  const course = document.getElementById('repeatCourseSel').value;
+  const reason = document.getElementById('repeatReasonSel').value;
+  const sem = document.getElementById('repeatSemSel').value;
+  repeatRequests.unshift({id:nextId(), course, sem, status:"gold", label:"Submitted · Pending Review"});
+  document.getElementById('repeatRemarks').value = "";
+  renderRepeatTable();
+  renderMyApps();
+  showToast(`Repeat request for ${course.split(' —')[0]} submitted.`);
+}
+function removeRepeatRequest(id){
+  repeatRequests = repeatRequests.filter(r=>r.id!==id);
+  renderRepeatTable();
+  renderMyApps();
+  showToast("Repeat request withdrawn.");
+}
+function buildRepeat(){
+  return `
+  <div class="pageHead"><div class="eyebrow">Requests</div><h2>Course Repeat Application</h2><p>Apply to repeat a course to improve your grade or clear a backlog. Subject to Controller of Examinations approval.</p></div>
+  <div class="card">
+    <h3>New Repeat Request</h3>
+    <div class="formGrid">
+      <div class="fGroup"><label>Select Course</label><select id="repeatCourseSel"><option>CS-309 — Compiler Construction (Grade: B)</option><option>MT-201 — Linear Algebra (Grade: B)</option><option>CS-302 — Theory of Automata (Grade: B)</option></select></div>
+      <div class="fGroup"><label>Reason for Repeat</label><select id="repeatReasonSel"><option>Improve CGPA</option><option>Grade below requirement</option><option>Prerequisite requirement</option></select></div>
+      <div class="fGroup"><label>Preferred Semester</label><select id="repeatSemSel"><option>Fall 2026</option><option>Spring 2027</option></select></div>
+      <div class="fGroup"><label>Current CGPA (auto-filled)</label><input type="text" value="${finalCGPA.toFixed(2)}" readonly></div>
+    </div>
+    <div class="fGroup" style="margin-top:16px;"><label>Additional Remarks</label><textarea id="repeatRemarks" placeholder="Explain briefly why you are applying to repeat this course..."></textarea></div>
+    <div style="margin-top:16px;"><button class="btn primary" onclick="submitRepeatRequest()">Submit Application</button> <button class="btn outline" onclick="showToast('Draft saved.')">Save as Draft</button></div>
+  </div>
+  <div class="card">
+    <h3>Previous Repeat Requests</h3>
+    <table><tr><th>Course</th><th>Semester Applied</th><th>Status</th><th></th></tr>
+    <tbody id="repeatTableBox"></tbody>
+    </table>
+  </div>`;
+}
+
+function renderComplaintLog(){
+  const box = document.getElementById('complaintLogBox');
+  if(!box) return;
+  if(complaints.length===0){ box.innerHTML = `<p style="font-size:12.5px;color:var(--ink-soft);">No complaints submitted yet — anything you submit above will appear here.</p>`; return; }
+  box.innerHTML = complaints.map(c=>`
+    <div class="appRow"><div class="aIcon">⚠️</div><div class="aBody"><b>${c.course} — ${c.instructor||'Instructor'}</b><span>${c.nature} · Submitted ${c.date}</span></div><span class="pill navy">In Review</span></div>`).join('');
+}
+function submitComplaint(){
+  const course = document.getElementById('cplCourseSel').value;
+  const instructor = document.getElementById('cplInstructor').value.trim() || "Instructor not specified";
+  const nature = document.getElementById('cplNatureSel').value;
+  complaints.unshift({id:nextId(), course, instructor, nature, date:todayStr()});
+  document.getElementById('cplInstructor').value = "";
+  document.getElementById('cplDesc').value = "";
+  renderComplaintLog();
+  renderMyApps();
+  showToast("Complaint submitted confidentially to the Department Chairperson.");
+}
+function buildComplaint(){
+  return `
+  <div class="pageHead"><div class="eyebrow">Requests</div><h2>Application Against Teacher</h2><p>Submit a formal, confidential complaint regarding a course instructor. Reviewed by the Department Chairperson within 7 working days.</p></div>
+  <div class="card">
+    <div class="noteBanner" style="background:var(--maroon-pale);border-left-color:var(--maroon);color:var(--maroon);">Complaints are treated confidentially. Please provide specific, factual details — vague complaints may delay resolution.</div>
+    <div class="formGrid">
+      <div class="fGroup"><label>Course</label><select id="cplCourseSel"><option>CS-309 — Compiler Construction</option><option>CS-306 — Computer Graphics</option><option>CS-310 — Parallel & Distributed Computing</option></select></div>
+      <div class="fGroup"><label>Instructor Name</label><input type="text" id="cplInstructor" placeholder="e.g. Mr. Ali Hamza"></div>
+      <div class="fGroup"><label>Nature of Complaint</label><select id="cplNatureSel"><option>Inadequate teaching / syllabus not covered</option><option>Unfair grading</option><option>Frequent absence / late arrival</option><option>Unprofessional conduct</option><option>Other</option></select></div>
+      <div class="fGroup"><label>Preferred Resolution</label><select><option>Request extra classes / catch-up sessions</option><option>Request re-evaluation of grading</option><option>Formal warning to instructor</option><option>Escalate to HOD meeting</option></select></div>
+    </div>
+    <div class="fGroup" style="margin-top:16px;"><label>Detailed Description</label><textarea id="cplDesc" placeholder="Describe the issue with dates and specific examples..."></textarea></div>
+    <div class="fGroup" style="margin-top:14px;"><label><input type="checkbox" style="width:auto;margin-right:8px;">Keep my identity confidential from the instructor</label></div>
+    <div style="margin-top:16px;"><button class="btn maroon" onclick="submitComplaint()">Submit Application</button></div>
+  </div>
+  <div class="card">
+    <h3>My Submitted Complaints</h3>
+    <div id="complaintLogBox"></div>
+  </div>`;
+}
+
+function renderScholarshipTable(){
+  const box = document.getElementById('scholarshipTableBox');
+  if(!box) return;
+  box.innerHTML = scholarshipApps.map(s=>`
+    <tr><td>${s.name}</td><td>${s.date}</td><td><span class="pill ${s.status}">${s.label}</span></td>
+    <td><button class="btn small outline" onclick="removeScholarshipApp('${s.id}')">Withdraw</button></td></tr>`).join('')
+    || `<tr><td colspan="4" style="color:var(--ink-soft);">No scholarship applications yet.</td></tr>`;
+}
+function applyScholarship(name){
+  scholarshipApps.unshift({id:nextId(), name, date:todayStr(), status:"gold", label:"Submitted · Under Review"});
+  renderScholarshipTable();
+  renderMyApps();
+  showToast(`Application for ${name} submitted.`);
+}
+function removeScholarshipApp(id){
+  scholarshipApps = scholarshipApps.filter(s=>s.id!==id);
+  renderScholarshipTable();
+  renderMyApps();
+  showToast("Scholarship application withdrawn.");
+}
+function buildScholarship(){
+  return `
+  <div class="pageHead"><div class="eyebrow">Requests</div><h2>Scholarship</h2><p>Browse available financial aid programmes and track your application status.</p></div>
+  <div class="grid3">
+    <div class="card"><h3>Merit Scholarship <span class="tag">CGPA ≥ 3.5</span></h3><p style="font-size:12.5px;color:var(--ink-soft);margin-bottom:12px;">Covers 50% tuition fee for students maintaining CGPA above 3.5. Renewed each semester.</p><span class="pill green">Eligible</span><div style="margin-top:14px;"><button class="btn small primary" onclick="applyScholarship('Merit Scholarship')">Apply Now</button></div></div>
+    <div class="card"><h3>Need-Based Aid <span class="tag">HEC Ehsaas</span></h3><p style="font-size:12.5px;color:var(--ink-soft);margin-bottom:12px;">Financial support for students demonstrating verified household income constraints.</p><span class="pill gold">Documents Pending</span><div style="margin-top:14px;"><button class="btn small outline" onclick="applyScholarship('Need-Based Aid')">Continue Application</button></div></div>
+    <div class="card"><h3>Sports Excellence <span class="tag">University Team</span></h3><p style="font-size:12.5px;color:var(--ink-soft);margin-bottom:12px;">For students representing USC in inter-university sports competitions.</p><span class="pill navy">Not Applicable</span><div style="margin-top:14px;"><button class="btn small outline" disabled>View Criteria</button></div></div>
+  </div>
+  <div class="card">
+    <h3>My Scholarship Applications</h3>
+    <table><tr><th>Programme</th><th>Applied On</th><th>Status</th><th></th></tr>
+    <tbody id="scholarshipTableBox"></tbody>
+    </table>
+  </div>`;
+}
+
+function renderDocuments(){
+  const box = document.getElementById('docsListBox');
+  const count = document.getElementById('docsCount');
+  if(!box) return;
+  if(count) count.textContent = `${documents.length} files`;
+  box.innerHTML = documents.map(d=>`
+    <div class="docRow"><div class="left"><div class="docIcon">${d.type}</div><div><b style="font-size:13px;">${d.name}</b><div style="font-size:11px;color:var(--ink-soft);">Uploaded ${d.date}</div></div></div>
+    <div style="display:flex;align-items:center;gap:10px;"><span class="pill ${d.status}">${d.label}</span><button class="btn small outline" onclick="removeDocument('${d.id}')">Remove</button></div></div>`).join('')
+    || `<p style="font-size:12.5px;color:var(--ink-soft);">No documents uploaded yet.</p>`;
+}
+function uploadDocument(){
+  const typeSel = document.getElementById('docTypeSel');
+  const type = typeSel.value;
+  const ext = ["Income Certificate","CNIC / B-Form Copy","Domicile Certificate","Character Certificate","Medical Certificate"].includes(type) ? "PDF" : "JPG";
+  const fileName = type.split(' /')[0].replace(/\s+/g,'_') + (ext==="PDF" ? ".pdf" : ".jpg");
+  documents.unshift({id:nextId(), name:fileName, type:ext, date:todayStr(), status:"gold", label:"Under Review"});
+  renderDocuments();
+  showToast(`${fileName} uploaded successfully.`);
+}
+function removeDocument(id){
+  documents = documents.filter(d=>d.id!==id);
+  renderDocuments();
+  showToast("Document removed.");
+}
+function buildDocuments(){
+  return `
+  <div class="pageHead"><div class="eyebrow">Requests</div><h2>Upload Documents</h2><p>Upload required documents for admissions, scholarships, clearance and verification requests.</p></div>
+  <div class="card">
+    <h3>Upload New Document</h3>
+    <div class="formGrid">
+      <div class="fGroup"><label>Document Type</label><select id="docTypeSel"><option>CNIC / B-Form Copy</option><option>Domicile Certificate</option><option>Income Certificate</option><option>Matric / Intermediate Result</option><option>Character Certificate</option><option>Medical Certificate</option></select></div>
+      <div class="fGroup"><label>Related Request</label><select><option>General Record</option><option>Scholarship Application</option><option>Clearance</option><option>Course Repeat</option></select></div>
+    </div>
+    <div class="uploadBox" style="margin-top:16px;"><b>Drag & drop file, or click to browse</b>PDF, JPG or PNG — up to 5MB</div>
+    <button class="btn primary" onclick="uploadDocument()">Upload Document</button>
+  </div>
+  <div class="card">
+    <h3>Uploaded Documents <span class="tag" id="docsCount"></span></h3>
+    <div id="docsListBox"></div>
+  </div>`;
+}
+
+function renderMyApps(){
+  const box = document.getElementById('myAppsBox');
+  if(!box) return;
+  const staticExtras = [
+    {icon:"🧾",title:"Official Transcript Request",date:"10-Jul-2026",status:"navy",label:"Processing"},
+    {icon:"🪪",title:"Duplicate Student Card Request",date:"02-Mar-2025",status:"green",label:"Issued"},
+  ];
+  const rows = [
+    ...repeatRequests.map(r=>({icon:"📝",title:`Course Repeat — ${r.course}`,date:r.sem,status:r.status,label:r.label})),
+    ...complaints.map(c=>({icon:"⚠️",title:`Complaint — ${c.course}`,date:c.date,status:"navy",label:"In Review"})),
+    ...scholarshipApps.map(s=>({icon:"🎓",title:s.name,date:s.date,status:s.status,label:s.label})),
+    ...tickets.map(t=>({icon:"🛠️",title:`Support Ticket — ${t.title}`,date:t.date,status:t.status,label:t.label})),
+    ...staticExtras,
+  ];
+  box.innerHTML = rows.map(r=>`<div class="appRow"><div class="aIcon">${r.icon}</div><div class="aBody"><b>${r.title}</b><span>Submitted ${r.date}</span></div><span class="pill ${r.status}">${r.label}</span></div>`).join('')
+    || `<p style="font-size:12.5px;color:var(--ink-soft);">No applications submitted yet.</p>`;
+}
+function buildMyApps(){
+  return `
+  <div class="pageHead"><div class="eyebrow">Requests</div><h2>My Applications</h2><p>A consolidated, live log of every request you have submitted across the portal.</p></div>
+  <div class="card" id="myAppsBox"></div>`;
+}
+
+function buildClearance(){
+  const items = [
+    {name:"Library Clearance", desc:"No pending books or fines", status:"green", label:"Cleared"},
+    {name:"Hostel / Accommodation", desc:"Not Applicable — Day Scholar", status:"navy", label:"N/A"},
+    {name:"Accounts / Finance Office", desc:"Spring 2026 voucher still due", status:"red", label:"Pending"},
+    {name:"Transport Department", desc:"Bus pass returned", status:"green", label:"Cleared"},
+    {name:"Department (CS & IT)", desc:"Awaiting FYP-I final grade", status:"gold", label:"In Progress"},
+    {name:"Sports & Societies", desc:"No equipment issued", status:"green", label:"Cleared"},
+  ];
+  return `
+  <div class="pageHead"><div class="eyebrow">Requests</div><h2>My Clearance</h2><p>Track your clearance status across departments — required before final transcript or degree issuance.</p></div>
+  <div class="card">
+    ${items.map(i=>`<div class="clearItem"><div class="info"><b>${i.name}</b><span>${i.desc}</span></div><span class="pill ${i.status}">${i.label}</span></div>`).join('')}
+    <div style="margin-top:6px;"><button class="btn primary small">Request Final Clearance Certificate</button></div>
+  </div>`;
+}
+
+function renderFee(){
+  const box = document.getElementById('feeTableBox');
+  if(!box) return;
+  box.innerHTML = feeVouchers.map(v=>`
+    <tr><td>${v.sem}</td><td class="mono">${v.due}</td><td class="mono">${v.amt.toLocaleString()}</td>
+    <td><span class="pill ${v.status}">${v.label}</span></td>
+    <td>${v.status==='red'?`<button class="btn small primary" onclick="payVoucher('${v.id}')">Download &amp; Pay</button>`:'<button class="btn small outline">Download Receipt</button>'}</td></tr>`).join('');
+
+  const paid = feeVouchers.filter(v=>v.status==='green').reduce((a,v)=>a+v.amt,0);
+  const due = feeVouchers.filter(v=>v.status==='red').reduce((a,v)=>a+v.amt,0);
+  const nextDue = feeVouchers.find(v=>v.status==='red');
+  document.getElementById('feePaidStat').textContent = 'Rs. ' + paid.toLocaleString();
+  document.getElementById('feeDueStat').textContent = 'Rs. ' + due.toLocaleString();
+  document.getElementById('feeNextDate').textContent = nextDue ? nextDue.due : '—';
+}
+function payVoucher(id){
+  const v = feeVouchers.find(x=>x.id===id);
+  if(v){ v.status='green'; v.label='Paid'; }
+  renderFee();
+  showToast(`Payment recorded for ${v.sem} voucher.`);
+}
+function buildFee(){
+  return `
+  <div class="pageHead"><div class="eyebrow">Finance</div><h2>Fee Vouchers</h2><p>Download and pay semester fee vouchers through 1Bill, bank challan or online banking.</p></div>
+  <div class="grid4">
+    <div class="statCard"><div class="lbl">Total Paid</div><div class="val" id="feePaidStat" style="font-size:20px;"></div></div>
+    <div class="statCard"><div class="lbl">Outstanding</div><div class="val" id="feeDueStat" style="font-size:20px;color:var(--danger);"></div></div>
+    <div class="statCard"><div class="lbl">Next Due Date</div><div class="val" id="feeNextDate" style="font-size:18px;"></div></div>
+    <div class="statCard"><div class="lbl">Scholarship Applied</div><div class="val" style="font-size:20px;color:var(--success);">50%</div></div>
+  </div>
+  <div class="card">
+    <h3>Voucher History</h3>
+    <table><tr><th>Semester</th><th>Due Date</th><th>Amount (Rs.)</th><th>Status</th><th></th></tr>
+    <tbody id="feeTableBox"></tbody>
+    </table>
+  </div>`;
+}
+
+function buildLibrary(){
+  return `
+  <div class="pageHead"><div class="eyebrow">Services</div><h2>Library</h2><p>Search the USC library catalogue and manage your borrowed books.</p></div>
+  <div class="searchBar"><input type="text" placeholder="Search by title, author or ISBN..."><button class="btn primary">Search</button></div>
+  <div class="grid2">
+    <div class="card">
+      <h3>Currently Borrowed <span class="tag">2 books</span></h3>
+      <div class="libBookRow"><div><b>Artificial Intelligence: A Modern Approach</b><span>Stuart Russell, Peter Norvig</span></div><span class="pill gold">Due 05-Aug-2026</span></div>
+      <div class="libBookRow"><div><b>Design Patterns: Elements of Reusable OO Software</b><span>Gang of Four</span></div><span class="pill green">Due 20-Aug-2026</span></div>
+    </div>
+    <div class="card">
+      <h3>Recommended for CS-402</h3>
+      <div class="libBookRow"><div><b>Pattern Recognition and Machine Learning</b><span>Christopher Bishop</span></div><span class="pill navy">Available</span></div>
+      <div class="libBookRow"><div><b>Deep Learning</b><span>Ian Goodfellow et al.</span></div><span class="pill red">Checked Out</span></div>
+      <div class="libBookRow"><div><b>The Hundred-Page Machine Learning Book</b><span>Andriy Burkov</span></div><span class="pill navy">Available</span></div>
+    </div>
+  </div>`;
+}
+
+function buildTransport(){
+  const routes = [
+    {rt:"R-1", name:"City Center — Cantt Route", dep:"07:15 AM", ret:"03:45 PM", stops:"Chowk Kumharanwala, Cantt, Gate 1"},
+    {rt:"R-4", name:"Model Town — Campus Route", dep:"07:30 AM", ret:"04:00 PM", stops:"Model Town, Shah Rukn-e-Alam, Gate 2"},
+    {rt:"R-7", name:"Vehari Chowk — Campus Route", dep:"07:00 AM", ret:"03:30 PM", stops:"Vehari Chowk, Bosan Road, Gate 1"},
+  ];
+  return `
+  <div class="pageHead"><div class="eyebrow">Services</div><h2>Transport Schedule</h2><p>Bus routes and timings for the current semester. Your active pass: <b>Route R-4</b>.</p></div>
+  <div class="card">
+    ${routes.map(r=>`<div class="busRow"><div class="rt">${r.rt}</div><div class="rBody"><b>${r.name}</b><span>Stops: ${r.stops}</span></div><div style="text-align:right;font-size:12px;color:var(--ink-soft);">Departs <b style="color:var(--navy);">${r.dep}</b><br>Returns <b style="color:var(--navy);">${r.ret}</b></div></div>`).join('')}
+  </div>`;
+}
+
+function renderMails(){
+  const box = document.getElementById('mailListBox');
+  const count = document.getElementById('mailUnreadCount');
+  if(!box) return;
+  const unread = mails.filter(m=>!m.read).length;
+  if(count) count.textContent = `${unread} unread`;
+  box.innerHTML = mails.map(m=>`
+    <div class="mailRow" onclick="markMailRead('${m.id}')">
+      <div class="dot ${m.read?'read':''}"></div>
+      <div class="mBody"><span class="from">${m.from}</span> — <span class="subj">${m.subj}</span><div class="snip">${m.snip}</div></div>
+      <div class="time">${m.time}</div>
+      <button class="btn small outline" style="margin-left:8px;" onclick="event.stopPropagation(); deleteMail('${m.id}')">Delete</button>
+    </div>`).join('') || `<p style="font-size:12.5px;color:var(--ink-soft);padding:10px 0;">Inbox is empty.</p>`;
+}
+function markMailRead(id){
+  const m = mails.find(x=>x.id===id);
+  if(m && !m.read){ m.read = true; renderMails(); }
+}
+function deleteMail(id){
+  mails = mails.filter(m=>m.id!==id);
+  renderMails();
+  showToast("Email deleted.");
+}
+function buildEmail(){
+  return `
+  <div class="pageHead"><div class="eyebrow">Services</div><h2>Email Service</h2><p>Your official university inbox: <b>${student.email}</b></p></div>
+  <div class="card">
+    <h3>Inbox <span class="tag" id="mailUnreadCount"></span></h3>
+    <div class="mailList" id="mailListBox"></div>
+  </div>`;
+}
+
+function renderTickets(){
+  const box = document.getElementById('ticketsListBox');
+  const count = document.getElementById('ticketsOpenCount');
+  if(!box) return;
+  const openCount = tickets.filter(t=>t.label!=='Resolved').length;
+  if(count) count.textContent = `${openCount} open`;
+  box.innerHTML = tickets.map(t=>`
+    <div class="ticketRow">
+      <div class="top"><b>#${t.code} — ${t.title}</b><span class="pill ${t.status}">${t.label}</span></div>
+      <p>${t.desc}</p>
+      <div class="ticketMeta">Raised ${t.date} · Category: ${t.category} · Priority: ${t.priority}</div>
+      <div style="margin-top:10px;">
+        ${t.label!=='Resolved' ? `<button class="btn small outline" onclick="resolveTicket('${t.id}')">Mark Resolved</button>` : ''}
+        <button class="btn small outline" onclick="deleteTicket('${t.id}')">Delete</button>
+      </div>
+    </div>`).join('') || `<p style="font-size:12.5px;color:var(--ink-soft);">No tickets raised yet.</p>`;
+}
+function submitTicket(){
+  const category = document.getElementById('tckCategory').value;
+  const priority = document.getElementById('tckPriority').value;
+  const subject = document.getElementById('tckSubject').value.trim();
+  const desc = document.getElementById('tckDesc').value.trim();
+  if(!subject){ showToast("Please enter a subject before submitting."); return; }
+  tickets.unshift({id:nextId(), code:"TCK-"+Math.floor(3000+Math.random()*900), title:subject, desc: desc || "No further details provided.", category, priority, status:"gold", label:"Open", date:todayStr()});
+  document.getElementById('tckSubject').value = "";
+  document.getElementById('tckDesc').value = "";
+  renderTickets();
+  renderMyApps();
+  showToast("Support ticket submitted to the USC Help Desk.");
+}
+function resolveTicket(id){
+  const t = tickets.find(x=>x.id===id);
+  if(t){ t.status='green'; t.label='Resolved'; }
+  renderTickets();
+  renderMyApps();
+  showToast("Ticket marked as resolved.");
+}
+function deleteTicket(id){
+  tickets = tickets.filter(t=>t.id!==id);
+  renderTickets();
+  renderMyApps();
+  showToast("Ticket deleted.");
+}
+function buildTickets(){
+  return `
+  <div class="pageHead"><div class="eyebrow">Services</div><h2>Support Tickets</h2><p>Raise a technical or administrative issue with the USC Help Desk.</p></div>
+  <div class="card">
+    <h3>Raise New Ticket</h3>
+    <div class="formGrid">
+      <div class="fGroup"><label>Category</label><select id="tckCategory"><option>Portal / Login Issue</option><option>LMS Access</option><option>Fee Voucher Issue</option><option>Transcript / Documents</option><option>Other</option></select></div>
+      <div class="fGroup"><label>Priority</label><select id="tckPriority"><option>Low</option><option>Medium</option><option>High</option></select></div>
+    </div>
+    <div class="fGroup" style="margin-top:14px;"><label>Subject</label><input type="text" id="tckSubject" placeholder="Brief summary of the issue"></div>
+    <div class="fGroup" style="margin-top:14px;"><label>Description</label><textarea id="tckDesc" placeholder="Describe the issue in detail..."></textarea></div>
+    <div style="margin-top:16px;"><button class="btn primary" onclick="submitTicket()">Submit Ticket</button></div>
+  </div>
+  <div class="card">
+    <h3>My Tickets <span class="tag" id="ticketsOpenCount"></span></h3>
+    <div id="ticketsListBox"></div>
+  </div>`;
+}
+
+const builders = {
+  dashboard: buildDashboard, profile: buildProfile, idcard: buildIdCard,
+  transcript: buildTranscript, position: buildPosition, timetable: buildTimetable,
+  lms: buildLMS, thesis: buildThesis, survey: buildSurvey,
+  repeat: buildRepeat, complaint: buildComplaint, scholarship: buildScholarship,
+  documents: buildDocuments, myapps: buildMyApps, clearance: buildClearance,
+  fee: buildFee, library: buildLibrary, transport: buildTransport,
+  email: buildEmail, tickets: buildTickets
+};
+
+function buildAllPanels(){
+  const content = document.getElementById('content');
+  if(content.children.length) return; // build once
+  Object.keys(builders).forEach(key=>{
+    const wrap = document.createElement('div');
+    wrap.className = 'panel';
+    wrap.id = 'panel-'+key;
+    wrap.innerHTML = builders[key]();
+    content.appendChild(wrap);
+  });
+  document.getElementById('panel-dashboard').classList.add('active');
+  // populate all live/stateful sections
+  renderRepeatTable();
+  renderComplaintLog();
+  renderScholarshipTable();
+  renderDocuments();
+  renderMyApps();
+  renderFee();
+  renderMails();
+  renderTickets();
+}
+</script>
+<div id="toast"></div>
+</body>
+</html>
