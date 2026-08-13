@@ -1,0 +1,2348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Unique Student Cooperation | Student Portal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,600;0,700;1,500&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#141414;
+  --navy-light:#2B2B2B;
+  --navy-pale:#EEFBD2;
+  --maroon:#6FA400;
+  --maroon-pale:#EEFBD2;
+  --gold:#C6FF00;
+  --gold-light:#DDFF66;
+  --paper:#FAFAF8;
+  --paper-dark:#EFEFEC;
+  --ink:#141414;
+  --ink-soft:#6B6B6B;
+  --line:#E5E5E2;
+  --success:#2F6B4F;
+  --success-pale:#E4F0E9;
+  --danger:#B0413E;
+  --danger-pale:#FBEAE9;
+  --white:#FFFFFF;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Inter',sans-serif;background:var(--paper);color:var(--ink);-webkit-font-smoothing:antialiased;}
+h1,h2,h3,h4{font-family:'Lora',Georgia,serif;color:var(--navy);}
+.mono{font-family:'IBM Plex Mono',monospace;}
+a{color:inherit;text-decoration:none;}
+button{font-family:inherit;cursor:pointer;}
+::selection{background:var(--gold-light);}
+
+/* ---------- login ---------- */
+#loginScreen{display:grid;grid-template-columns:1fr 1fr;min-height:100vh;}
+.loginLeft{
+  background:linear-gradient(160deg,var(--navy),var(--navy-light));
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:40px;position:relative;overflow:hidden;
+}
+.loginLeft::before{content:"";position:absolute;inset:0;background-image:repeating-linear-gradient(135deg, rgba(255,255,255,0.03) 0 2px, transparent 2px 40px);}
+.loginLeft h1{color:var(--white);font-size:26px;margin-top:18px;text-align:center;position:relative;}
+.loginLeft p{color:rgba(255,255,255,0.65);font-size:13px;margin-top:6px;text-align:center;position:relative;}
+.loginStats{display:flex;gap:34px;margin-top:34px;position:relative;}
+.loginStats div{text-align:center;}
+.loginStats b{display:block;color:var(--white);font-family:'Lora',serif;font-size:20px;}
+.loginStats span{color:rgba(255,255,255,0.55);font-size:11px;letter-spacing:1px;text-transform:uppercase;}
+.loginRight{display:flex;align-items:center;justify-content:center;padding:40px;}
+.loginBox{width:100%;max-width:380px;}
+.roleTabs{display:flex;gap:8px;margin-bottom:24px;background:var(--paper-dark);border-radius:8px;padding:4px;}
+.roleTabs button{flex:1;padding:10px;border:none;background:transparent;border-radius:6px;font-size:13px;font-weight:600;color:var(--ink-soft);}
+.roleTabs button.active{background:var(--white);color:var(--navy);box-shadow:0 2px 6px rgba(0,0,0,0.08);}
+.loginBox .eyebrow{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:2px;color:var(--maroon);text-transform:uppercase;margin-bottom:10px;}
+.loginBox h2{font-size:24px;margin-bottom:6px;}
+.loginBox .sub{color:var(--ink-soft);font-size:13.5px;margin-bottom:24px;}
+.field{margin-bottom:16px;}
+.field label{display:block;font-size:12px;font-weight:600;color:var(--navy);margin-bottom:6px;}
+.field input{width:100%;padding:11px 13px;border:1.5px solid var(--line);border-radius:6px;font-size:14px;font-family:inherit;background:var(--white);}
+.field input:focus{outline:none;border-color:var(--navy);}
+.btnPrimary{width:100%;padding:13px;background:var(--navy);color:var(--white);border:none;border-radius:6px;font-size:14px;font-weight:700;letter-spacing:0.3px;margin-top:4px;}
+.btnPrimary:hover{background:var(--navy-light);}
+.loginNote{font-size:11px;color:var(--ink-soft);margin-top:22px;line-height:1.6;text-align:center;}
+.loginError{display:none;background:var(--danger-pale);color:var(--danger);padding:10px 13px;border-radius:6px;font-size:12.5px;margin-bottom:16px;}
+.loginPanel{display:none;}
+.loginPanel.active{display:block;}
+@media (max-width:820px){ #loginScreen{grid-template-columns:1fr;} .loginLeft{display:none;} }
+
+/* ---------- floating developer contact button ---------- */
+#devContactBtn{
+  position:fixed;right:22px;bottom:22px;width:50px;height:50px;border-radius:50%;
+  background:var(--gold);color:var(--navy);border:none;display:flex;align-items:center;justify-content:center;
+  box-shadow:0 6px 18px rgba(0,0,0,0.25);z-index:500;transition:transform .15s ease;
+}
+#devContactBtn:hover{transform:scale(1.08);}
+
+/* ---------- contact card (inside generic modal) ---------- */
+.ccWrap{text-align:center;}
+.ccAvatar{width:88px;height:88px;border-radius:50%;background:var(--paper-dark);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;color:#9A9A96;}
+.ccName{font-family:'Lora',serif;font-size:19px;color:var(--navy);}
+.ccSub{font-size:12.5px;color:var(--ink-soft);margin-top:3px;margin-bottom:20px;}
+.ccIcons{display:flex;justify-content:center;gap:16px;margin-bottom:22px;flex-wrap:wrap;}
+.ccIcon{display:flex;flex-direction:column;align-items:center;gap:6px;width:64px;}
+.ccIcon .bubble{width:50px;height:50px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;box-shadow:0 3px 8px rgba(0,0,0,0.12);}
+.ccIcon span{font-size:10.5px;color:var(--ink-soft);font-weight:600;}
+.ccIcon .bubble.wa{background:#25D366;}
+.ccIcon .bubble.call{background:#3B3B3B;}
+.ccIcon .bubble.fb{background:#1877F2;}
+.ccIcon .bubble.ig{background:radial-gradient(circle at 30% 110%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%);}
+.ccAddBtn{width:100%;padding:13px;border-radius:24px;border:1px solid var(--line);background:var(--paper-dark);color:var(--navy);font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:8px;}
+.ccAddBtn:hover{background:var(--gold-light);}
+
+/* ---------- app shell ---------- */
+#appShell{display:none;}
+#appShell.active{display:flex;min-height:100vh;}
+.sidebar{width:250px;flex-shrink:0;background:var(--navy);min-height:100vh;padding:22px 0;position:sticky;top:0;overflow-y:auto;height:100vh;}
+.sidebar::-webkit-scrollbar{width:5px;}
+.sidebar::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.15);}
+.sbBrand{display:flex;align-items:center;gap:10px;padding:0 20px 22px;border-bottom:1px solid rgba(255,255,255,0.08);margin-bottom:14px;}
+.sbBrand div b{display:block;color:var(--white);font-family:'Lora',serif;font-size:14px;line-height:1.25;}
+.sbBrand div span{font-size:9.5px;color:var(--gold-light);letter-spacing:1.5px;}
+.navGroupLabel{padding:14px 20px 6px;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,0.35);font-weight:600;}
+.navItem{display:flex;align-items:center;gap:10px;padding:10px 20px;font-size:13px;color:rgba(255,255,255,0.75);cursor:pointer;border-left:3px solid transparent;}
+.navItem:hover{background:rgba(255,255,255,0.05);color:var(--white);}
+.navItem.active{background:rgba(255,255,255,0.09);color:var(--white);border-left-color:var(--gold);}
+.navBadge{width:24px;height:24px;border-radius:6px;background:rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;font-size:9.5px;font-weight:700;font-family:'IBM Plex Mono',monospace;flex-shrink:0;}
+.navItem.active .navBadge{background:var(--gold);color:var(--navy);}
+.sbFooter{padding:16px 20px 0;}
+.logoutBtn{width:100%;padding:10px;background:transparent;border:1px solid rgba(255,255,255,0.2);color:rgba(255,255,255,0.7);border-radius:6px;font-size:12.5px;font-weight:600;}
+.logoutBtn:hover{border-color:var(--gold);color:var(--gold-light);}
+.mainWrap{display:flex;flex-direction:column;min-height:100vh;flex:1;min-width:0;}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:18px 30px;background:var(--white);border-bottom:1px solid var(--line);}
+.topbar h1{font-size:19px;}
+.topbar .crumb{font-size:11.5px;color:var(--ink-soft);font-family:'IBM Plex Mono',monospace;letter-spacing:0.5px;margin-top:2px;}
+.topRight{display:flex;align-items:center;gap:16px;}
+.topPill{background:var(--navy-pale);color:var(--navy);padding:6px 13px;border-radius:20px;font-size:11.5px;font-weight:700;}
+.avatarChip{display:flex;align-items:center;gap:9px;}
+.avatarChip .circle{width:34px;height:34px;border-radius:50%;background:var(--gold-light);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--navy);font-family:'IBM Plex Mono',monospace;}
+.avatarChip span{font-size:12.5px;font-weight:600;color:var(--navy);}
+.content{padding:28px 30px 60px;flex:1;}
+.panel{display:none;animation:fadeIn .25s ease;}
+.panel.active{display:block;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+.pageHead{margin-bottom:22px;}
+.pageHead .eyebrow{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:2px;color:var(--maroon);text-transform:uppercase;margin-bottom:6px;}
+.pageHead h2{font-size:24px;}
+.pageHead p{color:var(--ink-soft);font-size:13.5px;margin-top:4px;max-width:640px;}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px;}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+@media(max-width:960px){.grid4{grid-template-columns:repeat(2,1fr);}.grid3,.grid2{grid-template-columns:1fr;}}
+.statCard{background:var(--white);border:1px solid var(--line);border-radius:8px;padding:18px 20px;}
+.statCard .lbl{font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--ink-soft);margin-bottom:8px;}
+.statCard .val{font-family:'Lora',serif;font-size:26px;color:var(--navy);font-weight:700;}
+.statCard .sub{font-size:11.5px;color:var(--ink-soft);margin-top:4px;}
+.card{background:var(--white);border:1px solid var(--line);border-radius:8px;padding:20px 22px;margin-bottom:20px;}
+.card h3{font-size:16px;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;}
+.card h3 .tag{font-family:'IBM Plex Mono',monospace;font-size:10.5px;background:var(--paper-dark);padding:3px 9px;border-radius:12px;color:var(--ink-soft);font-weight:500;}
+table{width:100%;border-collapse:collapse;font-size:13px;}
+th{text-align:left;padding:9px 10px;font-size:10.5px;letter-spacing:0.5px;text-transform:uppercase;color:var(--ink-soft);border-bottom:2px solid var(--line);}
+td{padding:11px 10px;border-bottom:1px solid var(--paper-dark);color:var(--ink);vertical-align:middle;}
+.pill{display:inline-block;padding:3px 11px;border-radius:20px;font-size:11px;font-weight:600;letter-spacing:0.3px;white-space:nowrap;}
+.pill.green{background:var(--success-pale);color:var(--success);}
+.pill.red{background:var(--danger-pale);color:var(--danger);}
+.pill.gold{background:#EEFBD2;color:#5C8A00;}
+.pill.navy{background:var(--navy-pale);color:var(--navy);}
+.btn{padding:9px 16px;border-radius:6px;font-size:12.5px;font-weight:700;border:1.5px solid transparent;background:var(--paper-dark);color:var(--ink);}
+.btn.primary{background:var(--navy);color:var(--white);}
+.btn.primary:hover{background:var(--navy-light);}
+.btn.outline{background:transparent;border-color:var(--navy);color:var(--navy);}
+.btn.outline:hover{background:var(--navy-pale);}
+.btn.maroon{background:var(--maroon);color:var(--white);}
+.btn.maroon:hover{opacity:0.9;}
+.btn.small{padding:6px 12px;font-size:11.5px;}
+.btn.gold{background:var(--gold);color:var(--navy);}
+.btn[disabled]{opacity:0.45;cursor:not-allowed;}
+.fGroup{margin-bottom:14px;}
+.fGroup label{display:block;font-size:12px;font-weight:600;color:var(--navy);margin-bottom:6px;}
+.fGroup input,.fGroup select,.fGroup textarea{width:100%;padding:10px 12px;border:1.5px solid var(--line);border-radius:6px;font-size:13px;font-family:inherit;background:var(--white);}
+.fGroup textarea{resize:vertical;min-height:80px;}
+.fGroup input:focus,.fGroup select:focus,.fGroup textarea:focus{outline:none;border-color:var(--navy);}
+.formGrid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.formGrid .full{grid-column:1/-1;}
+@media(max-width:640px){.formGrid{grid-template-columns:1fr;}}
+.rowFlex{display:flex;gap:10px;flex-wrap:wrap;align-items:center;}
+.emptyState{text-align:center;padding:40px 20px;color:var(--ink-soft);font-size:13px;}
+.noteBanner{background:var(--navy-pale);border-left:3px solid var(--navy);padding:12px 16px;border-radius:0 6px 6px 0;font-size:12.5px;color:var(--navy);margin-bottom:18px;}
+.itemRow{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:13px 14px;border:1px solid var(--line);border-radius:6px;margin-bottom:10px;background:var(--white);flex-wrap:wrap;}
+.itemRow .info b{display:block;font-size:13.5px;color:var(--navy);}
+.itemRow .info span{font-size:11.5px;color:var(--ink-soft);}
+.menuBtn{display:none;background:none;border:1px solid var(--line);border-radius:5px;padding:7px 10px;margin-right:10px;}
+
+/* ---------- modal ---------- */
+.modalOverlay{display:none;position:fixed;inset:0;background:rgba(15,42,74,0.55);z-index:999;align-items:center;justify-content:center;padding:20px;}
+.modalOverlay.open{display:flex;}
+.modalBox{background:var(--white);border-radius:10px;max-width:600px;width:100%;max-height:88vh;overflow-y:auto;padding:24px;box-shadow:0 20px 50px rgba(0,0,0,0.3);}
+.modalBox h2{margin-bottom:4px;font-size:20px;}
+.modalBox p.sub{color:var(--ink-soft);font-size:12.5px;margin-bottom:18px;}
+.modalActions{display:flex;justify-content:flex-end;gap:10px;margin-top:20px;}
+
+/* ---------- footer / toast ---------- */
+.siteFooter{padding:16px 30px;border-top:1px solid var(--line);}
+.siteFooter-inner{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:11.5px;color:var(--ink-soft);}
+.siteFooter-inner b{color:var(--navy);}
+.siteFooter-inner .dot{color:var(--line);}
+#toast{position:fixed;bottom:24px;right:24px;background:var(--navy);color:var(--white);padding:13px 20px;border-radius:6px;font-size:13px;font-weight:600;box-shadow:0 10px 30px rgba(0,0,0,0.25);transform:translateY(20px);opacity:0;pointer-events:none;transition:all .25s;z-index:999;border-left:4px solid var(--gold);}
+#toast.show{transform:translateY(0);opacity:1;}
+@media(max-width:860px){
+  .sidebar{position:fixed;left:-260px;transition:left .25s;z-index:500;}
+  .sidebar.open{left:0;}
+  .menuBtn{display:inline-block;}
+  .content{padding:20px 16px 60px;}
+  .topbar{padding:14px 16px;}
+}
+</style>
+</head>
+<body>
+
+<!-- ================= LOGIN SCREEN ================= -->
+<div id="loginScreen">
+  <div class="loginLeft">
+    <img src="logo.png" alt="Unique Student Cooperation logo" style="width:170px;height:170px;object-fit:contain;filter:drop-shadow(0 8px 24px rgba(0,0,0,0.35));">
+    <h1>Unique Student Cooperation</h1>
+    <p>Student Information &amp; Services Portal</p>
+    <div class="loginStats">
+      <div><b>21</b><span>Departments</span></div>
+      <div><b>7,400+</b><span>Enrolled</span></div>
+      <div><b>96%</b><span>Uptime</span></div>
+    </div>
+  </div>
+
+  <div class="loginRight">
+    <div class="loginBox">
+      <div class="roleTabs">
+        <button id="tabStudentBtn" class="active" onclick="switchLoginTab('student')">Student</button>
+        <button id="tabAdminBtn" onclick="switchLoginTab('admin')">Admin</button>
+      </div>
+
+      <!-- STUDENT LOGIN -->
+      <div class="loginPanel active" id="studentLoginPanel">
+        <div class="eyebrow">Student Sign In</div>
+        <h2>Welcome back</h2>
+        <p class="sub">Sign in with your registration number.</p>
+        <div class="loginError" id="studentLoginError">Invalid registration number or password.</div>
+        <div class="field">
+          <label>Registration Number</label>
+          <input type="text" id="regNoInput" placeholder="e.g. FA22-BCS-045" autocomplete="username">
+        </div>
+        <div class="field">
+          <label>Password</label>
+          <input type="password" id="passInput" placeholder="••••••••" autocomplete="current-password">
+        </div>
+        <button class="btnPrimary" onclick="doStudentLogin()">Sign In to Portal</button>
+        <p class="loginNote">No login? Contact the admin.</p>
+      </div>
+
+      <!-- ADMIN LOGIN -->
+      <div class="loginPanel" id="adminLoginPanel">
+        <div class="eyebrow">Admin Sign In</div>
+        <h2>Admin Console</h2>
+        <p class="sub">Sign in to manage the portal.</p>
+        <div class="loginError" id="adminLoginError">Invalid admin username or password.</div>
+        <div class="field">
+          <label>Admin Username</label>
+          <input type="text" id="adminUserInput" placeholder="admin" autocomplete="username">
+        </div>
+        <div class="field">
+          <label>Password</label>
+          <input type="password" id="adminPassInput" placeholder="••••••••" autocomplete="current-password">
+        </div>
+        <button class="btnPrimary" onclick="doAdminLogin()">Sign In as Admin</button>
+      </div>
+
+      <p class="loginNote">© 2026 Unique Student Cooperation. All rights reserved.<br>Developed by <b>Asad Zafar</b> · Student of Information Technology, The Islamia University of Bahawalpur · 0326-5593756<br><a href="https://www.instagram.com/asadzafar89?igsh=MTY1czVkbDhnaDlndw==" target="_blank" rel="noopener" style="color:var(--maroon);font-weight:600;">Instagram</a> · <a href="https://www.facebook.com/share/14f9mexkYKK/" target="_blank" rel="noopener" style="color:var(--maroon);font-weight:600;">Facebook</a></p>
+    </div>
+  </div>
+</div>
+
+<!-- ================= APP SHELL ================= -->
+<div id="appShell">
+  <div class="sidebar" id="sidebar">
+    <div class="sbBrand">
+      <img src="logo.png" alt="USC logo" style="width:38px;height:38px;object-fit:contain;flex-shrink:0;">
+      <div><b>Unique Student<br>Cooperation</b><span id="sbRoleLabel">STUDENT PORTAL</span></div>
+    </div>
+    <div id="navContainer"></div>
+    <div class="sbFooter">
+      <button class="logoutBtn" onclick="doLogout()">Sign Out</button>
+    </div>
+  </div>
+
+  <div class="mainWrap">
+    <div class="topbar">
+      <div style="display:flex;align-items:center;">
+        <button class="menuBtn" onclick="document.getElementById('sidebar').classList.toggle('open')">☰</button>
+        <div>
+          <h1 id="topTitle">Dashboard</h1>
+          <div class="crumb" id="topCrumb">USC PORTAL / DASHBOARD</div>
+        </div>
+      </div>
+      <div class="topRight">
+        <div class="topPill" id="topPill">—</div>
+        <div class="avatarChip">
+          <div class="circle" id="avatarInitials">—</div>
+          <span id="avatarName">—</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="content" id="content"></div>
+
+    <div class="siteFooter">
+      <div class="siteFooter-inner">
+        <span>© 2026 Unique Student Cooperation. All rights reserved.</span>
+        <span class="dot">·</span>
+        <span>Developed by <b>Asad Zafar</b>, Student of Information Technology at The Islamia University of Bahawalpur</span>
+        <span class="dot">·</span>
+        <span>📞 0326-5593756</span>
+        <span class="dot">·</span>
+        <span>📍 Multan</span>
+        <span class="dot">·</span>
+        <a href="https://www.instagram.com/asadzafar89?igsh=MTY1czVkbDhnaDlndw==" target="_blank" rel="noopener" style="color:inherit;font-weight:600;">Instagram</a>
+        <span class="dot">·</span>
+        <a href="https://www.facebook.com/share/14f9mexkYKK/" target="_blank" rel="noopener" style="color:inherit;font-weight:600;">Facebook</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- floating developer contact button -->
+<button id="devContactBtn" onclick="openDevContact()" title="Contact the developer" aria-label="Contact the developer">
+  <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M19 8v6M22 11h-6"></path></svg>
+</button>
+
+<!-- generic reusable modal -->
+<div class="modalOverlay" id="genericModal">
+  <div class="modalBox" id="genericModalBox"></div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+/* ============================================================
+   DATABASE (localStorage-backed demo database)
+   NOTE: This is a static site with no real server, so this DB
+   lives only in this browser. It is a working prototype, not a
+   secure multi-device backend.
+============================================================ */
+const DB_KEY = 'uscDB_v1';
+const SESSION_KEY = 'uscSession_v1';
+
+function uid(){ return Date.now().toString(36) + Math.random().toString(36).slice(2,8); }
+
+function seedDB(){
+  return {
+    admin: { username:'AsadAdmin454598', password:'AllahMeinThakGyaHon786!', name:'Administrator', email:'' },
+    staff: [],
+    students: [],
+    lectures: [],
+    applications: [],
+    vouchers: [],
+    installmentPlans: [],
+    scholarships: [
+      { id: uid(), name:'Merit Scholarship', description:'Covers 50% tuition fee for students maintaining CGPA above 3.5. Renewed each semester.', eligibility:'CGPA ≥ 3.5' },
+      { id: uid(), name:'Need-Based Aid', description:'Financial support for students demonstrating verified household income constraints.', eligibility:'HEC Ehsaas documents' }
+    ],
+    scholarshipApps: [],
+    tickets: [],
+    documents: [],
+    timetable: [],
+    trips: [], tripVouchers: [],
+    assignments: [], assignmentSubs: [],
+    onlineClasses: [],
+    sportsGames: [], sportsParticipants: []
+  };
+}
+
+let db = null;
+function loadDB(){
+  try{
+    const raw = localStorage.getItem(DB_KEY);
+    db = raw ? JSON.parse(raw) : seedDB();
+  }catch(e){ db = seedDB(); }
+  if(!db.admin) db.admin = { username:'AsadAdmin454598', password:'AllahMeinThakGyaHon786!', name:'Administrator', email:'' };
+  if(!db.admin.name) db.admin.name = 'Administrator';
+  if(db.admin.email===undefined) db.admin.email = '';
+  ['students','lectures','applications','vouchers','installmentPlans','scholarships','scholarshipApps','tickets','documents','timetable','staff',
+   'trips','tripVouchers','assignments','assignmentSubs','onlineClasses','sportsGames','sportsParticipants'].forEach(k=>{
+    if(!Array.isArray(db[k])) db[k]=[];
+  });
+}
+function saveDB(){ localStorage.setItem(DB_KEY, JSON.stringify(db)); }
+loadDB();
+
+/* ============================================================
+   DEVELOPER CONTACT CARD
+============================================================ */
+function openDevContact(){
+  openModal(`
+    <div class="ccWrap" style="max-width:320px;margin:0 auto;">
+      <div class="ccAvatar">
+        <svg viewBox="0 0 24 24" width="46" height="46" fill="currentColor"><path d="M12 12c2.76 0 5-2.46 5-5.5S14.76 1 12 1 7 3.46 7 6.5 9.24 12 12 12zm0 2.5c-3.87 0-9 1.94-9 5.5v2.5h18V20c0-3.56-5.13-5.5-9-5.5z"/></svg>
+      </div>
+      <div class="ccName">Asad Zafar</div>
+      <div class="ccSub">Developer · IT Student, Islamia University of Bahawalpur</div>
+      <div class="ccIcons">
+        <a class="ccIcon" href="https://wa.me/923265593756" target="_blank" rel="noopener">
+          <span class="bubble wa"><svg viewBox="0 0 24 24" width="22" height="22" fill="#fff"><path d="M17.6 6.32A8.86 8.86 0 0 0 12.05 4 8.94 8.94 0 0 0 3.4 16.6L2 21l4.5-1.38a9 9 0 0 0 4.55 1.23h.01A8.94 8.94 0 0 0 20 12a8.86 8.86 0 0 0-2.4-5.68zM12.05 19.1a7.4 7.4 0 0 1-3.83-1.05l-.27-.16-2.77.85.85-2.7-.18-.28a7.44 7.44 0 1 1 13.75-3.75 7.4 7.4 0 0 1-7.55 7.09zm4.1-5.55c-.22-.11-1.32-.65-1.53-.73-.2-.08-.35-.11-.5.11-.15.22-.58.73-.71.88-.13.15-.26.16-.48.05a6.1 6.1 0 0 1-1.79-1.1 6.7 6.7 0 0 1-1.24-1.54c-.13-.22 0-.34.1-.45.1-.1.22-.26.33-.39.11-.13.15-.22.22-.37.07-.15.04-.28-.02-.39-.06-.11-.5-1.2-.68-1.65-.18-.43-.36-.37-.5-.38h-.43c-.15 0-.39.06-.59.28-.2.22-.77.75-.77 1.83s.79 2.12.9 2.27c.11.15 1.55 2.36 3.75 3.31.52.22.93.36 1.25.46.53.17 1 .15 1.38.09.42-.06 1.32-.54 1.5-1.06.19-.52.19-.96.13-1.06-.05-.1-.2-.15-.42-.26z"/></svg></span>
+          <span>WhatsApp</span>
+        </a>
+        <a class="ccIcon" href="tel:+923265593756">
+          <span class="bubble call"><svg viewBox="0 0 24 24" width="20" height="20" fill="#fff"><path d="M6.62 10.79a15.05 15.05 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1.02-.24 11.36 11.36 0 0 0 3.56.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1 11.36 11.36 0 0 0 .57 3.56 1 1 0 0 1-.25 1.02z"/></svg></span>
+          <span>Call</span>
+        </a>
+        <a class="ccIcon" href="https://www.facebook.com/share/14f9mexkYKK/" target="_blank" rel="noopener">
+          <span class="bubble fb"><svg viewBox="0 0 24 24" width="20" height="20" fill="#fff"><path d="M13.5 21v-7.5h2.5l.5-3h-3V8.5c0-.87.24-1.46 1.49-1.46H16.5V4.35C16.24 4.32 15.36 4.24 14.33 4.24c-2.15 0-3.62 1.31-3.62 3.72V10.5H8.2v3h2.5V21z"/></svg></span>
+          <span>Facebook</span>
+        </a>
+        <a class="ccIcon" href="https://www.instagram.com/asadzafar89?igsh=MTY1czVkbDhnaDlndw==" target="_blank" rel="noopener">
+          <span class="bubble ig"><svg viewBox="0 0 24 24" width="20" height="20" fill="#fff"><path d="M12 8.4a3.6 3.6 0 1 0 0 7.2 3.6 3.6 0 0 0 0-7.2zm0 5.94a2.34 2.34 0 1 1 0-4.68 2.34 2.34 0 0 1 0 4.68zm4.6-6.1a.84.84 0 1 1-1.68 0 .84.84 0 0 1 1.68 0zM20 7.2c-.06-1.24-.34-2.34-1.23-3.23C17.88 3.08 16.78 2.8 15.54 2.74 14.26 2.67 9.74 2.67 8.46 2.74 7.22 2.8 6.12 3.08 5.23 3.97 4.34 4.86 4.06 5.96 4 7.2 3.93 8.48 3.93 15.52 4 16.8c.06 1.24.34 2.34 1.23 3.23.89.89 1.99 1.17 3.23 1.23 1.28.07 5.8.07 7.08 0 1.24-.06 2.34-.34 3.23-1.23.89-.89 1.17-1.99 1.23-3.23.07-1.28.07-5.72 0-7.6zM18.2 18.2a3.44 3.44 0 0 1-1.94 1.94c-1.35.53-4.53.41-6.01.41s-4.67.12-6.01-.41a3.44 3.44 0 0 1-1.94-1.94C1.77 16.85 1.9 13.67 1.9 12.19s-.13-4.67.4-6.01A3.44 3.44 0 0 1 4.24 4.24c1.34-.53 4.52-.4 6.01-.4s4.66-.13 6.01.4a3.44 3.44 0 0 1 1.94 1.94c.53 1.34.4 4.52.4 6.01s.13 4.66-.4 6.01z"/></svg></span>
+          <span>Instagram</span>
+        </a>
+      </div>
+      <button class="ccAddBtn" onclick="downloadVCard()">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><line x1="20" y1="8" x2="20" y2="14"></line><line x1="17" y1="11" x2="23" y2="11"></line></svg>
+        Add Contact
+      </button>
+    </div>
+  `);
+}
+function downloadVCard(){
+  const vcard = ['BEGIN:VCARD','VERSION:3.0','FN:Asad Zafar','TEL;TYPE=CELL:+923265593756',
+    'URL:https://wa.me/923265593756','URL:https://www.facebook.com/share/14f9mexkYKK/',
+    'URL:https://www.instagram.com/asadzafar89','NOTE:Developer of the Unique Student Cooperation Portal','END:VCARD'].join('\n');
+  const blob = new Blob([vcard], {type:'text/vcard'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'Asad-Zafar.vcf';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  showToast('Contact card downloaded.');
+}
+
+/* ============================================================
+   TOAST
+============================================================ */
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(window._toastTimer);
+  window._toastTimer = setTimeout(()=>t.classList.remove('show'), 2600);
+}
+
+/* ============================================================
+   GENERIC MODAL
+============================================================ */
+function openModal(html){
+  document.getElementById('genericModalBox').innerHTML = html;
+  document.getElementById('genericModal').classList.add('open');
+}
+function closeModal(){
+  document.getElementById('genericModal').classList.remove('open');
+}
+
+/* ============================================================
+   LOGIN TABS
+============================================================ */
+function switchLoginTab(role){
+  document.getElementById('tabStudentBtn').classList.toggle('active', role==='student');
+  document.getElementById('tabAdminBtn').classList.toggle('active', role==='admin');
+  document.getElementById('studentLoginPanel').classList.toggle('active', role==='student');
+  document.getElementById('adminLoginPanel').classList.toggle('active', role==='admin');
+}
+
+/* ============================================================
+   AUTH
+============================================================ */
+let currentUser = null; // {role:'admin'} or {role:'student', id}
+
+function doStudentLogin(){
+  const reg = document.getElementById('regNoInput').value.trim();
+  const pass = document.getElementById('passInput').value;
+  const student = db.students.find(s=> s.regNo.toLowerCase()===reg.toLowerCase() && s.password===pass);
+  const err = document.getElementById('studentLoginError');
+  if(!student){ err.style.display='block'; return; }
+  err.style.display='none';
+  currentUser = { role:'student', id: student.id };
+  sessionStorage.setItem(SESSION_KEY, JSON.stringify(currentUser));
+  enterApp();
+}
+function doAdminLogin(){
+  const u = document.getElementById('adminUserInput').value.trim();
+  const p = document.getElementById('adminPassInput').value;
+  const err = document.getElementById('adminLoginError');
+  const staffMatch = db.staff.find(st=> st.username===u && st.password===p);
+  if(u===db.admin.username && p===db.admin.password){
+    currentUser = { role:'admin', staffId:null };
+  } else if(staffMatch){
+    currentUser = { role:'admin', staffId: staffMatch.id };
+  } else {
+    err.style.display='block'; return;
+  }
+  err.style.display='none';
+  sessionStorage.setItem(SESSION_KEY, JSON.stringify(currentUser));
+  enterApp();
+}
+function currentAdminName(){
+  if(!currentUser || currentUser.role!=='admin') return 'Administrator';
+  if(currentUser.staffId){ const st = db.staff.find(x=>x.id===currentUser.staffId); return st?st.name:'Staff'; }
+  return db.admin.name || 'Administrator';
+}
+function doLogout(){
+  sessionStorage.removeItem(SESSION_KEY);
+  currentUser = null;
+  document.getElementById('appShell').classList.remove('active');
+  document.getElementById('loginScreen').style.display='grid';
+  document.getElementById('regNoInput').value='';
+  document.getElementById('passInput').value='';
+  document.getElementById('adminUserInput').value='';
+  document.getElementById('adminPassInput').value='';
+}
+document.getElementById('passInput').addEventListener('keydown', e=>{ if(e.key==='Enter') doStudentLogin(); });
+document.getElementById('adminPassInput').addEventListener('keydown', e=>{ if(e.key==='Enter') doAdminLogin(); });
+
+function currentStudent(){
+  if(!currentUser || currentUser.role!=='student') return null;
+  return db.students.find(s=>s.id===currentUser.id) || null;
+}
+
+function enterApp(){
+  document.getElementById('loginScreen').style.display='none';
+  document.getElementById('appShell').classList.add('active');
+  buildNav();
+  const first = currentUser.role==='admin' ? 'admDashboard' : 'stuDashboard';
+  switchPanel(first);
+  document.getElementById('avatarInitials').textContent = currentUser.role==='admin' ? initials(currentAdminName()) : initials(currentStudent()?.name || 'Student');
+  document.getElementById('avatarName').textContent = currentUser.role==='admin' ? currentAdminName() : (currentStudent()?.name || 'Student');
+  document.getElementById('topPill').textContent = currentUser.role==='admin' ? 'ADMIN' : (currentStudent()?.regNo || '');
+  document.getElementById('sbRoleLabel').textContent = currentUser.role==='admin' ? 'ADMIN CONSOLE' : 'STUDENT PORTAL';
+}
+function initials(name){ return name.split(' ').filter(Boolean).map(w=>w[0]).join('').toUpperCase().slice(0,2) || 'ST'; }
+
+/* ============================================================
+   NAVIGATION
+============================================================ */
+const ADMIN_NAV = [
+  { group:'Overview', items:[ ['admDashboard','DB','Dashboard'] ] },
+  { group:'Students', items:[ ['admStudents','ST','Manage Students'], ['admResults','RS','Results'] ] },
+  { group:'Academics', items:[ ['admLectures','LC','Lectures'], ['admApplications','AP','Applications'], ['admTimetable','TT','Time Table'] ] },
+  { group:'Finance', items:[ ['admVouchers','FV','Fee Vouchers'], ['admInstallments','IN','Installments'] ] },
+  { group:'Support', items:[ ['admScholarships','SC','Scholarships'], ['admTickets','TK','Support Tickets'] ] },
+  { group:'Resources', items:[ ['admDocuments','DR','Document Repository'] ] },
+  { group:'Activities', items:[ ['admTrips','TP','Trips & Tours'], ['admAssignments','AS','Assignments'], ['admOnlineClasses','OC','Online Classes'], ['admSports','SP','Sports Gala'] ] },
+  { group:'Administration', items:[ ['admSettings','SG','Settings'] ] },
+];
+const STUDENT_NAV = [
+  { group:'Overview', items:[ ['stuDashboard','DB','Dashboard'] ] },
+  { group:'Academics', items:[ ['stuProfile','PR','Profile'], ['stuResult','RS','My Result'], ['stuTranscript','TR','Transcript'], ['stuLectures','LC','Lectures'], ['stuTimetable','TT','Time Table'] ] },
+  { group:'Requests', items:[ ['stuApply','AP','Apply Against Teacher'], ['stuTickets','TK','Support Tickets'] ] },
+  { group:'Finance', items:[ ['stuVouchers','FV','Fee Vouchers'], ['stuInstallments','IN','Installments'] ] },
+  { group:'Support', items:[ ['stuScholarships','SC','Scholarships'] ] },
+  { group:'Activities', items:[ ['stuTrips','TP','Trips & Tours'], ['stuAssignments','AS','Assignments'], ['stuOnlineClasses','OC','Online Classes'], ['stuSports','SP','Sports Gala'] ] },
+  { group:'Resources', items:[ ['stuDocuments','DR','Document Repository'], ['stuLibrary','LB','Library'], ['stuIDCard','ID','My Student Card'] ] },
+];
+const PANEL_TITLES = {
+  admDashboard:['Dashboard','ADMIN / DASHBOARD'], admStudents:['Manage Students','ADMIN / STUDENTS'], admResults:['Results','ADMIN / RESULTS'],
+  admLectures:['Lectures','ADMIN / LECTURES'], admApplications:['Applications','ADMIN / APPLICATIONS'], admVouchers:['Fee Vouchers','ADMIN / VOUCHERS'],
+  admInstallments:['Installments','ADMIN / INSTALLMENTS'], admScholarships:['Scholarships','ADMIN / SCHOLARSHIPS'],
+  admTimetable:['Time Table','ADMIN / TIMETABLE'], admTickets:['Support Tickets','ADMIN / TICKETS'], admDocuments:['Document Repository','ADMIN / DOCUMENTS'],
+  admSettings:['Settings','ADMIN / SETTINGS'],
+  admTrips:['Trips & Tours','ADMIN / TRIPS'], admAssignments:['Assignments','ADMIN / ASSIGNMENTS'],
+  admOnlineClasses:['Online Classes','ADMIN / ONLINE CLASSES'], admSports:['Sports Gala','ADMIN / SPORTS'],
+  stuDashboard:['Dashboard','PORTAL / DASHBOARD'], stuResult:['My Result','PORTAL / RESULT'], stuLectures:['Lectures','PORTAL / LECTURES'],
+  stuApply:['Apply Against Teacher','PORTAL / APPLICATIONS'], stuVouchers:['Fee Vouchers','PORTAL / VOUCHERS'],
+  stuInstallments:['Installments','PORTAL / INSTALLMENTS'], stuScholarships:['Scholarships','PORTAL / SCHOLARSHIPS'],
+  stuProfile:['Profile','PORTAL / PROFILE'], stuTranscript:['Transcript','PORTAL / TRANSCRIPT'], stuTimetable:['Time Table','PORTAL / TIMETABLE'],
+  stuTickets:['Support Tickets','PORTAL / TICKETS'], stuDocuments:['Document Repository','PORTAL / DOCUMENTS'],
+  stuLibrary:['Library','PORTAL / LIBRARY'], stuIDCard:['My Student Card','PORTAL / ID CARD'],
+  stuTrips:['Trips & Tours','PORTAL / TRIPS'], stuAssignments:['Assignments','PORTAL / ASSIGNMENTS'],
+  stuOnlineClasses:['Online Classes','PORTAL / ONLINE CLASSES'], stuSports:['Sports Gala','PORTAL / SPORTS']
+};
+const PANEL_BUILDERS = {
+  admDashboard: buildAdmDashboard, admStudents: buildAdmStudents, admResults: buildAdmResults,
+  admLectures: buildAdmLectures, admApplications: buildAdmApplications, admVouchers: buildAdmVouchers,
+  admInstallments: buildAdmInstallments, admScholarships: buildAdmScholarships,
+  admTimetable: buildAdmTimetable, admTickets: buildAdmTickets, admDocuments: buildAdmDocuments, admSettings: buildAdmSettings,
+  admTrips: buildAdmTrips, admAssignments: buildAdmAssignments, admOnlineClasses: buildAdmOnlineClasses, admSports: buildAdmSports,
+  stuDashboard: buildStuDashboard, stuResult: buildStuResult, stuLectures: buildStuLectures,
+  stuApply: buildStuApply, stuVouchers: buildStuVouchers, stuInstallments: buildStuInstallments, stuScholarships: buildStuScholarships,
+  stuProfile: buildStuProfile, stuTranscript: buildStuTranscript, stuTimetable: buildStuTimetable,
+  stuTickets: buildStuTickets, stuDocuments: buildStuDocuments, stuLibrary: buildStuLibrary, stuIDCard: buildStuIDCard,
+  stuTrips: buildStuTrips, stuAssignments: buildStuAssignments, stuOnlineClasses: buildStuOnlineClasses, stuSports: buildStuSports
+};
+
+function buildNav(){
+  const nav = currentUser.role==='admin' ? ADMIN_NAV : STUDENT_NAV;
+  let html = '';
+  nav.forEach(g=>{
+    html += `<div class="navGroupLabel">${g.group}</div>`;
+    g.items.forEach(([key,badge,label])=>{
+      html += `<div class="navItem" data-panel="${key}" onclick="switchPanel('${key}')"><span class="navBadge">${badge}</span>${label}</div>`;
+    });
+  });
+  document.getElementById('navContainer').innerHTML = html;
+}
+
+function switchPanel(key){
+  document.querySelectorAll('.navItem').forEach(n=> n.classList.toggle('active', n.dataset.panel===key));
+  const [title, crumb] = PANEL_TITLES[key] || ['',''];
+  document.getElementById('topTitle').textContent = title;
+  document.getElementById('topCrumb').textContent = crumb;
+  const builder = PANEL_BUILDERS[key];
+  document.getElementById('content').innerHTML = builder ? builder() : '';
+  document.getElementById('sidebar').classList.remove('open');
+  window.scrollTo(0,0);
+}
+function refreshCurrentPanel(){
+  const activeNav = document.querySelector('.navItem.active');
+  if(activeNav) switchPanel(activeNav.dataset.panel);
+}
+
+/* ============================================================
+   ADMIN: DASHBOARD
+============================================================ */
+function buildAdmDashboard(){
+  const pendingApps = db.applications.filter(a=>a.status==='pending').length;
+  const pendingVouchers = db.vouchers.filter(v=>v.status==='submitted').length;
+  const pendingSchol = db.scholarshipApps.filter(a=>a.status==='pending').length;
+  return `
+  <div class="pageHead"><div class="eyebrow">Admin Console</div><h2>Welcome, Administrator</h2><p>Manage students, results, lectures, fees and more.</p></div>
+  <div class="grid4">
+    <div class="statCard"><div class="lbl">Total Students</div><div class="val">${db.students.length}</div><div class="sub">Registered accounts</div></div>
+    <div class="statCard"><div class="lbl">Pending Applications</div><div class="val">${pendingApps}</div><div class="sub">Awaiting review</div></div>
+    <div class="statCard"><div class="lbl">Vouchers to Review</div><div class="val">${pendingVouchers}</div><div class="sub">Receipts uploaded</div></div>
+    <div class="statCard"><div class="lbl">Scholarship Requests</div><div class="val">${pendingSchol}</div><div class="sub">Awaiting decision</div></div>
+  </div>
+  <div class="grid2">
+    <div class="card"><h3>Quick Actions</h3>
+      <div class="rowFlex">
+        <button class="btn primary small" onclick="switchPanel('admStudents')">Add Student</button>
+        <button class="btn outline small" onclick="switchPanel('admLectures')">Add Lecture</button>
+        <button class="btn outline small" onclick="switchPanel('admVouchers')">Create Voucher</button>
+        <button class="btn outline small" onclick="switchPanel('admInstallments')">Create Installment Plan</button>
+      </div>
+    </div>
+    <div class="card"><h3>Recently Added Students</h3>
+      ${db.students.slice(-5).reverse().map(s=>`<div class="itemRow"><div class="info"><b>${esc(s.name)}</b><span>${esc(s.regNo)} · ${esc(s.program)}</span></div></div>`).join('') || '<div class="emptyState">No students added yet.</div>'}
+    </div>
+  </div>`;
+}
+
+/* ============================================================
+   ADMIN: MANAGE STUDENTS
+============================================================ */
+function buildAdmStudents(){
+  return `
+  <div class="pageHead"><div class="eyebrow">Students</div><h2>Manage Students</h2><p>Add, edit or remove student accounts.</p></div>
+  <div class="card">
+    <h3>All Students <button class="btn primary small" onclick="openStudentForm()">+ Add Student</button></h3>
+    <table>
+      <thead><tr><th>Name</th><th>Reg No.</th><th>Programme</th><th>Semester</th><th>Password</th><th></th></tr></thead>
+      <tbody>
+        ${db.students.map(s=>`
+          <tr>
+            <td><b>${esc(s.name)}</b></td>
+            <td class="mono">${esc(s.regNo)}</td>
+            <td>${esc(s.program)}</td>
+            <td>${esc(s.currentSemester)}</td>
+            <td class="mono">${esc(s.password)}</td>
+            <td>
+              <button class="btn small outline" onclick="openStudentForm('${s.id}')">Edit</button>
+              <button class="btn small maroon" onclick="deleteStudent('${s.id}')">Delete</button>
+            </td>
+          </tr>`).join('') || `<tr><td colspan="6"><div class="emptyState">No students yet. Click "Add Student" to create the first account.</div></td></tr>`}
+      </tbody>
+    </table>
+  </div>`;
+}
+function openStudentForm(id){
+  const s = id ? db.students.find(x=>x.id===id) : null;
+  const v = (f,d='')=> s ? (s[f] ?? d) : d;
+  openModal(`
+    <h2>${s?'Edit Student':'Add Student'}</h2>
+    <p class="sub">Create or update a student's login below.</p>
+    <input type="hidden" id="sf_id" value="${s?s.id:''}">
+    <div class="formGrid">
+      <div class="fGroup"><label>Full Name</label><input id="sf_name" value="${escAttr(v('name'))}"></div>
+      <div class="fGroup"><label>Registration No.</label><input id="sf_regNo" value="${escAttr(v('regNo'))}" placeholder="FA22-BCS-045"></div>
+      <div class="fGroup"><label>Password</label><input id="sf_password" value="${escAttr(v('password'))}" placeholder="Set login password"></div>
+      <div class="fGroup"><label>Father's Name</label><input id="sf_fatherName" value="${escAttr(v('fatherName'))}"></div>
+      <div class="fGroup"><label>Programme</label><input id="sf_program" value="${escAttr(v('program','BS Computer Science'))}"></div>
+      <div class="fGroup"><label>Department</label><input id="sf_department" value="${escAttr(v('department','Faculty of Computer Science & IT'))}"></div>
+      <div class="fGroup"><label>Campus</label><input id="sf_campus" value="${escAttr(v('campus','Main Campus'))}"></div>
+      <div class="fGroup"><label>Current Semester</label><input id="sf_currentSemester" value="${escAttr(v('currentSemester','1st Semester'))}"></div>
+      <div class="fGroup full"><label>Session</label><input id="sf_session" value="${escAttr(v('session'))}" placeholder="Fall 2022 – Fall 2026"></div>
+      <div class="fGroup"><label>CNIC / B-Form</label><input id="sf_cnic" value="${escAttr(v('cnic'))}"></div>
+      <div class="fGroup"><label>Date of Birth</label><input id="sf_dob" value="${escAttr(v('dob'))}"></div>
+      <div class="fGroup"><label>Phone</label><input id="sf_phone" value="${escAttr(v('phone'))}"></div>
+      <div class="fGroup"><label>Email</label><input id="sf_email" value="${escAttr(v('email'))}"></div>
+      <div class="fGroup full"><label>Address</label><input id="sf_address" value="${escAttr(v('address'))}"></div>
+    </div>
+    <div class="modalActions">
+      <button class="btn outline" onclick="closeModal()">Cancel</button>
+      <button class="btn primary" onclick="saveStudent()">${s?'Save Changes':'Create Account'}</button>
+    </div>
+  `);
+}
+function saveStudent(){
+  const id = document.getElementById('sf_id').value;
+  const name = document.getElementById('sf_name').value.trim();
+  const regNo = document.getElementById('sf_regNo').value.trim();
+  const password = document.getElementById('sf_password').value.trim();
+  if(!name || !regNo || !password){ showToast('Name, Reg No. and Password are required.'); return; }
+  const dupe = db.students.find(s=> s.regNo.toLowerCase()===regNo.toLowerCase() && s.id!==id);
+  if(dupe){ showToast('That Registration No. is already used by another student.'); return; }
+  const data = {
+    name, regNo, password,
+    fatherName: document.getElementById('sf_fatherName').value.trim(),
+    program: document.getElementById('sf_program').value.trim(),
+    department: document.getElementById('sf_department').value.trim(),
+    campus: document.getElementById('sf_campus').value.trim(),
+    currentSemester: document.getElementById('sf_currentSemester').value.trim(),
+    session: document.getElementById('sf_session').value.trim(),
+    cnic: document.getElementById('sf_cnic').value.trim(),
+    dob: document.getElementById('sf_dob').value.trim(),
+    phone: document.getElementById('sf_phone').value.trim(),
+    email: document.getElementById('sf_email').value.trim(),
+    address: document.getElementById('sf_address').value.trim(),
+  };
+  if(id){
+    const s = db.students.find(x=>x.id===id);
+    Object.assign(s, data);
+  } else {
+    db.students.push(Object.assign({ id: uid(), results: [] }, data));
+  }
+  saveDB(); closeModal(); showToast('Student saved.'); refreshCurrentPanel();
+}
+function deleteStudent(id){
+  if(!confirm('Delete this student and all their related records (results, vouchers, applications)? This cannot be undone.')) return;
+  db.students = db.students.filter(s=>s.id!==id);
+  db.applications = db.applications.filter(a=>a.studentId!==id);
+  db.vouchers = db.vouchers.filter(v=>v.studentId!==id);
+  db.installmentPlans = db.installmentPlans.filter(p=>p.studentId!==id);
+  db.scholarshipApps = db.scholarshipApps.filter(a=>a.studentId!==id);
+  saveDB(); showToast('Student deleted.'); refreshCurrentPanel();
+}
+
+/* ============================================================
+   ADMIN: RESULTS
+============================================================ */
+function buildAdmResults(){
+  return `
+  <div class="pageHead"><div class="eyebrow">Academics</div><h2>Manage Results</h2><p>Add or edit semester results for a student.</p></div>
+  <div class="card">
+    <div class="fGroup" style="max-width:340px;"><label>Select Student</label>
+      <select id="resStudentSel" onchange="renderResultEditor()">
+        <option value="">— choose a student —</option>
+        ${db.students.map(s=>`<option value="${s.id}">${esc(s.name)} (${esc(s.regNo)})</option>`).join('')}
+      </select>
+    </div>
+    <div id="resultEditorBox"></div>
+  </div>`;
+}
+function renderResultEditor(){
+  const id = document.getElementById('resStudentSel').value;
+  const box = document.getElementById('resultEditorBox');
+  if(!id){ box.innerHTML=''; return; }
+  const s = db.students.find(x=>x.id===id);
+  box.innerHTML = `
+    <div class="rowFlex" style="margin:14px 0;"><button class="btn primary small" onclick="openSemesterForm('${id}')">+ Add Semester Result</button></div>
+    ${(s.results||[]).map((sem,i)=>`
+      <div class="card" style="background:var(--paper);">
+        <h3>${esc(sem.semester)} <span>
+          <button class="btn small outline" onclick="openSemesterForm('${id}', ${i})">Edit</button>
+          <button class="btn small maroon" onclick="deleteSemester('${id}', ${i})">Delete</button>
+        </span></h3>
+        <table>
+          <thead><tr><th>Course</th><th>Title</th><th>Credit</th><th>Grade</th></tr></thead>
+          <tbody>${sem.courses.map(c=>`<tr><td class="mono">${esc(c.code)}</td><td>${esc(c.title)}</td><td>${esc(c.credit)}</td><td><b>${esc(c.grade)}</b></td></tr>`).join('')}</tbody>
+        </table>
+      </div>`).join('') || '<div class="emptyState">No results added for this student yet.</div>'}
+  `;
+}
+function openSemesterForm(studentId, semIndex){
+  const s = db.students.find(x=>x.id===studentId);
+  const sem = (semIndex!=null) ? s.results[semIndex] : null;
+  const coursesText = sem ? sem.courses.map(c=>`${c.code} | ${c.title} | ${c.credit} | ${c.grade}`).join('\n') : 'CS-101 | Introduction to Computing | 3 | A';
+  openModal(`
+    <h2>${sem?'Edit':'Add'} Semester Result</h2>
+    <p class="sub">One course per line: <b>Code | Title | Credit Hours | Grade</b></p>
+    <input type="hidden" id="semf_studentId" value="${studentId}">
+    <input type="hidden" id="semf_index" value="${semIndex!=null?semIndex:''}">
+    <div class="fGroup"><label>Semester Name</label><input id="semf_name" value="${escAttr(sem?sem.semester:'')}" placeholder="Fall 2022"></div>
+    <div class="fGroup"><label>Courses</label><textarea id="semf_courses" style="min-height:150px;font-family:'IBM Plex Mono',monospace;font-size:12.5px;">${esc(coursesText)}</textarea></div>
+    <div class="modalActions">
+      <button class="btn outline" onclick="closeModal()">Cancel</button>
+      <button class="btn primary" onclick="saveSemester()">Save</button>
+    </div>
+  `);
+}
+function saveSemester(){
+  const studentId = document.getElementById('semf_studentId').value;
+  const idxRaw = document.getElementById('semf_index').value;
+  const idx = idxRaw==='' ? null : parseInt(idxRaw,10);
+  const name = document.getElementById('semf_name').value.trim();
+  const lines = document.getElementById('semf_courses').value.split('\n').map(l=>l.trim()).filter(Boolean);
+  if(!name || !lines.length){ showToast('Semester name and at least one course are required.'); return; }
+  const courses = lines.map(l=>{
+    const parts = l.split('|').map(p=>p.trim());
+    return { code: parts[0]||'', title: parts[1]||'', credit: parts[2]||'', grade: parts[3]||'' };
+  });
+  const s = db.students.find(x=>x.id===studentId);
+  if(!s.results) s.results = [];
+  if(idx!=null){ s.results[idx] = { semester:name, courses }; }
+  else { s.results.push({ semester:name, courses }); }
+  saveDB(); closeModal(); showToast('Result saved.'); renderResultEditor();
+}
+function deleteSemester(studentId, idx){
+  if(!confirm('Delete this semester result?')) return;
+  const s = db.students.find(x=>x.id===studentId);
+  s.results.splice(idx,1);
+  saveDB(); renderResultEditor();
+}
+
+/* ============================================================
+   ADMIN: LECTURES
+============================================================ */
+function buildAdmLectures(){
+  return `
+  <div class="pageHead"><div class="eyebrow">Academics</div><h2>Manage Lectures</h2><p>Add lecture materials for students.</p></div>
+  <div class="card">
+    <h3>All Lectures <button class="btn primary small" onclick="openLectureForm()">+ Add Lecture</button></h3>
+    ${db.lectures.map(l=>`
+      <div class="itemRow">
+        <div class="info"><b>${esc(l.title)}</b><span>${esc(l.course)} · ${esc(l.teacher)} · ${esc(l.date)}</span></div>
+        <div class="rowFlex">
+          <button class="btn small outline" onclick="openLectureForm('${l.id}')">Edit</button>
+          <button class="btn small maroon" onclick="deleteLecture('${l.id}')">Delete</button>
+        </div>
+      </div>`).join('') || '<div class="emptyState">No lectures added yet.</div>'}
+  </div>`;
+}
+function openLectureForm(id){
+  const l = id ? db.lectures.find(x=>x.id===id) : null;
+  openModal(`
+    <h2>${l?'Edit':'Add'} Lecture</h2>
+    <input type="hidden" id="lf_id" value="${l?l.id:''}">
+    <div class="fGroup"><label>Title</label><input id="lf_title" value="${escAttr(l?l.title:'')}"></div>
+    <div class="fGroup"><label>Course</label><input id="lf_course" value="${escAttr(l?l.course:'')}" placeholder="CS-301 Database Systems"></div>
+    <div class="fGroup"><label>Teacher</label><input id="lf_teacher" value="${escAttr(l?l.teacher:'')}"></div>
+    <div class="fGroup"><label>Link / Notes</label><input id="lf_link" value="${escAttr(l?l.link:'')}" placeholder="Video link, Drive link, or notes"></div>
+    <div class="fGroup"><label>Date</label><input id="lf_date" value="${escAttr(l?l.date:new Date().toISOString().slice(0,10))}"></div>
+    <div class="modalActions">
+      <button class="btn outline" onclick="closeModal()">Cancel</button>
+      <button class="btn primary" onclick="saveLecture()">Save</button>
+    </div>
+  `);
+}
+function saveLecture(){
+  const id = document.getElementById('lf_id').value;
+  const data = {
+    title: document.getElementById('lf_title').value.trim(),
+    course: document.getElementById('lf_course').value.trim(),
+    teacher: document.getElementById('lf_teacher').value.trim(),
+    link: document.getElementById('lf_link').value.trim(),
+    date: document.getElementById('lf_date').value.trim(),
+  };
+  if(!data.title){ showToast('Title is required.'); return; }
+  if(id){ Object.assign(db.lectures.find(x=>x.id===id), data); }
+  else { db.lectures.push(Object.assign({id:uid()}, data)); }
+  saveDB(); closeModal(); showToast('Lecture saved.'); refreshCurrentPanel();
+}
+function deleteLecture(id){
+  if(!confirm('Delete this lecture?')) return;
+  db.lectures = db.lectures.filter(l=>l.id!==id);
+  saveDB(); showToast('Lecture deleted.'); refreshCurrentPanel();
+}
+
+/* ============================================================
+   ADMIN: APPLICATIONS (against teachers)
+============================================================ */
+function buildAdmApplications(){
+  return `
+  <div class="pageHead"><div class="eyebrow">Requests</div><h2>Student Applications</h2><p>Review and respond to student applications.</p></div>
+  <div class="card">
+    ${db.applications.slice().reverse().map(a=>{
+      const s = db.students.find(x=>x.id===a.studentId);
+      return `
+      <div class="itemRow" style="align-items:flex-start;flex-direction:column;">
+        <div style="display:flex;justify-content:space-between;width:100%;flex-wrap:wrap;gap:8px;">
+          <div class="info"><b>${esc(a.subject)}</b><span>${esc(s?s.name:'Unknown')} (${esc(s?s.regNo:'')}) · Against: ${esc(a.teacher)} · ${esc(a.date)}</span></div>
+          <span class="pill ${a.status==='approved'?'green':a.status==='rejected'?'red':'gold'}">${a.status}</span>
+        </div>
+        <p style="font-size:12.5px;color:var(--ink-soft);margin-top:8px;">${esc(a.message)}</p>
+        ${a.reply?`<p style="font-size:12px;color:var(--navy);margin-top:6px;"><b>Admin reply:</b> ${esc(a.reply)}</p>`:''}
+        ${a.status==='pending' ? `
+        <div class="rowFlex" style="margin-top:10px;">
+          <input type="text" id="reply_${a.id}" placeholder="Optional reply..." style="flex:1;min-width:180px;padding:8px 10px;border:1.5px solid var(--line);border-radius:6px;font-size:12.5px;">
+          <button class="btn small primary" onclick="reviewApplication('${a.id}','approved')">Approve</button>
+          <button class="btn small maroon" onclick="reviewApplication('${a.id}','rejected')">Reject</button>
+        </div>` : ''}
+      </div>`;
+    }).join('') || '<div class="emptyState">No applications submitted yet.</div>'}
+  </div>`;
+}
+function reviewApplication(id, status){
+  const a = db.applications.find(x=>x.id===id);
+  const replyEl = document.getElementById('reply_'+id);
+  a.status = status;
+  a.reply = replyEl ? replyEl.value.trim() : '';
+  saveDB(); showToast('Application '+status+'.'); refreshCurrentPanel();
+}
+
+/* ============================================================
+   ADMIN: FEE VOUCHERS
+============================================================ */
+function buildAdmVouchers(){
+  const toReview = db.vouchers.filter(v=>v.status==='submitted');
+  return `
+  <div class="pageHead"><div class="eyebrow">Finance</div><h2>Fee Vouchers</h2><p>Create vouchers and review paid receipts.</p></div>
+  <div class="card">
+    <h3>Create Voucher <button class="btn primary small" onclick="openVoucherForm()">+ New Voucher</button></h3>
+    <table>
+      <thead><tr><th>Student</th><th>Semester</th><th>Amount</th><th>Due Date</th><th>Status</th><th></th></tr></thead>
+      <tbody>
+        ${db.vouchers.slice().reverse().map(v=>{
+          const s = db.students.find(x=>x.id===v.studentId);
+          return `<tr>
+            <td>${esc(s?s.name:'Unknown')}</td><td>${esc(v.semester)}</td><td class="mono">${esc(v.amount)}</td><td class="mono">${esc(v.dueDate)}</td>
+            <td><span class="pill ${v.status==='paid'?'green':v.status==='submitted'?'gold':'red'}">${v.status}</span></td>
+            <td><button class="btn small maroon" onclick="deleteVoucher('${v.id}')">Delete</button></td>
+          </tr>`;
+        }).join('') || `<tr><td colspan="6"><div class="emptyState">No vouchers created yet.</div></td></tr>`}
+      </tbody>
+    </table>
+  </div>
+  <div class="card">
+    <h3>Uploaded Receipts Awaiting Review <span class="tag">${toReview.length} pending</span></h3>
+    ${toReview.map(v=>{
+      const s = db.students.find(x=>x.id===v.studentId);
+      return `
+      <div class="itemRow">
+        <div class="info"><b>${esc(s?s.name:'Unknown')} · ${esc(v.semester)}</b><span>Amount: ${esc(v.amount)} · Uploaded: ${esc(v.uploadedDate||'')} ${v.receiptName?('· File: '+esc(v.receiptName)):''}</span></div>
+        <div class="rowFlex">
+          ${v.receiptData ? `<button class="btn small outline" onclick="viewReceipt('${v.id}')">View Receipt</button>` : ''}
+          <button class="btn small primary" onclick="reviewVoucher('${v.id}','paid')">Mark Paid</button>
+          <button class="btn small maroon" onclick="reviewVoucher('${v.id}','unpaid')">Reject</button>
+        </div>
+      </div>`;
+    }).join('') || '<div class="emptyState">No receipts pending review.</div>'}
+  </div>`;
+}
+function openVoucherForm(){
+  if(!db.students.length){ showToast('Add a student first.'); return; }
+  openModal(`
+    <h2>Create Fee Voucher</h2>
+    <div class="fGroup"><label>Student</label>
+      <select id="vf_studentId">${db.students.map(s=>`<option value="${s.id}">${esc(s.name)} (${esc(s.regNo)})</option>`).join('')}</select>
+    </div>
+    <div class="formGrid">
+      <div class="fGroup"><label>Semester</label><input id="vf_semester" placeholder="Spring 2026"></div>
+      <div class="fGroup"><label>Amount (PKR)</label><input id="vf_amount" placeholder="45000"></div>
+      <div class="fGroup full"><label>Due Date</label><input id="vf_dueDate" placeholder="30-Sep-2026"></div>
+    </div>
+    <div class="modalActions">
+      <button class="btn outline" onclick="closeModal()">Cancel</button>
+      <button class="btn primary" onclick="saveVoucher()">Create Voucher</button>
+    </div>
+  `);
+}
+function saveVoucher(){
+  const studentId = document.getElementById('vf_studentId').value;
+  const semester = document.getElementById('vf_semester').value.trim();
+  const amount = document.getElementById('vf_amount').value.trim();
+  const dueDate = document.getElementById('vf_dueDate').value.trim();
+  if(!semester || !amount || !dueDate){ showToast('All fields are required.'); return; }
+  db.vouchers.push({ id:uid(), studentId, semester, amount, dueDate, status:'unpaid', receiptData:null, receiptName:'', uploadedDate:'' });
+  saveDB(); closeModal(); showToast('Voucher created.'); refreshCurrentPanel();
+}
+function deleteVoucher(id){
+  if(!confirm('Delete this voucher?')) return;
+  db.vouchers = db.vouchers.filter(v=>v.id!==id);
+  saveDB(); showToast('Voucher deleted.'); refreshCurrentPanel();
+}
+function reviewVoucher(id, status){
+  const v = db.vouchers.find(x=>x.id===id);
+  v.status = status;
+  if(status==='unpaid'){ v.receiptData=null; v.receiptName=''; v.uploadedDate=''; }
+  saveDB(); showToast('Voucher marked '+status+'.'); refreshCurrentPanel();
+}
+function viewReceipt(id){
+  const v = db.vouchers.find(x=>x.id===id);
+  if(!v || !v.receiptData) return;
+  const w = window.open('');
+  w.document.write(`<title>Receipt - ${esc(v.receiptName)}</title>`);
+  if(v.receiptData.startsWith('data:image')){ w.document.write(`<img src="${v.receiptData}" style="max-width:100%;">`); }
+  else { w.document.write(`<a href="${v.receiptData}" download="${esc(v.receiptName)}">Download receipt file: ${esc(v.receiptName)}</a>`); }
+}
+
+/* ============================================================
+   ADMIN: INSTALLMENTS
+============================================================ */
+function buildAdmInstallments(){
+  return `
+  <div class="pageHead"><div class="eyebrow">Finance</div><h2>Installment Plans</h2><p>Set up and track student installment plans.</p></div>
+  <div class="card">
+    <h3>Create Installment Plan <button class="btn primary small" onclick="openInstallmentForm()">+ New Plan</button></h3>
+  </div>
+  ${db.installmentPlans.slice().reverse().map(p=>{
+    const s = db.students.find(x=>x.id===p.studentId);
+    return `
+    <div class="card">
+      <h3>${esc(p.title)} — ${esc(s?s.name:'Unknown')} <span class="tag">Total: ${esc(p.totalAmount)}</span></h3>
+      <table>
+        <thead><tr><th>#</th><th>Amount</th><th>Due Date</th><th>Status</th><th></th></tr></thead>
+        <tbody>
+          ${p.schedule.map((row,i)=>`<tr>
+            <td>${row.no}</td><td class="mono">${esc(row.amount)}</td><td class="mono">${esc(row.dueDate)}</td>
+            <td><span class="pill ${row.status==='paid'?'green':'gold'}">${row.status}</span></td>
+            <td>${row.status!=='paid' ? `<button class="btn small primary" onclick="markInstallmentPaid('${p.id}', ${i})">Mark Paid</button>` : ''}</td>
+          </tr>`).join('')}
+        </tbody>
+      </table>
+      <div class="rowFlex" style="margin-top:10px;"><button class="btn small maroon" onclick="deleteInstallmentPlan('${p.id}')">Delete Plan</button></div>
+    </div>`;
+  }).join('') || '<div class="emptyState">No installment plans created yet.</div>'}
+  `;
+}
+function openInstallmentForm(){
+  if(!db.students.length){ showToast('Add a student first.'); return; }
+  openModal(`
+    <h2>Create Installment Plan</h2>
+    <div class="fGroup"><label>Student</label>
+      <select id="if_studentId">${db.students.map(s=>`<option value="${s.id}">${esc(s.name)} (${esc(s.regNo)})</option>`).join('')}</select>
+    </div>
+    <div class="formGrid">
+      <div class="fGroup full"><label>Plan Title</label><input id="if_title" placeholder="Spring 2026 Tuition Fee"></div>
+      <div class="fGroup"><label>Total Amount (PKR)</label><input id="if_total" placeholder="90000"></div>
+      <div class="fGroup"><label>Number of Installments</label><input id="if_count" placeholder="3"></div>
+      <div class="fGroup full"><label>First Due Date</label><input id="if_firstDue" placeholder="15-Sep-2026"></div>
+    </div>
+    <p class="sub">Installments auto-spaced one month apart.</p>
+    <div class="modalActions">
+      <button class="btn outline" onclick="closeModal()">Cancel</button>
+      <button class="btn primary" onclick="saveInstallmentPlan()">Create Plan</button>
+    </div>
+  `);
+}
+function saveInstallmentPlan(){
+  const studentId = document.getElementById('if_studentId').value;
+  const title = document.getElementById('if_title').value.trim();
+  const total = parseFloat(document.getElementById('if_total').value);
+  const count = parseInt(document.getElementById('if_count').value,10);
+  const firstDue = document.getElementById('if_firstDue').value.trim();
+  if(!title || !total || !count || count<1 || !firstDue){ showToast('All fields are required and count must be at least 1.'); return; }
+  const perAmount = Math.round((total/count)*100)/100;
+  const schedule = [];
+  for(let i=0;i<count;i++){
+    schedule.push({ no:i+1, amount: i===count-1 ? Math.round((total - perAmount*(count-1))*100)/100 : perAmount, dueDate: i===0?firstDue:('+'+i+'mo from '+firstDue), status:'due' });
+  }
+  db.installmentPlans.push({ id:uid(), studentId, title, totalAmount:total, schedule });
+  saveDB(); closeModal(); showToast('Installment plan created.'); refreshCurrentPanel();
+}
+function markInstallmentPaid(planId, idx){
+  const p = db.installmentPlans.find(x=>x.id===planId);
+  p.schedule[idx].status = 'paid';
+  saveDB(); showToast('Installment marked paid.'); refreshCurrentPanel();
+}
+function deleteInstallmentPlan(id){
+  if(!confirm('Delete this installment plan?')) return;
+  db.installmentPlans = db.installmentPlans.filter(p=>p.id!==id);
+  saveDB(); showToast('Plan deleted.'); refreshCurrentPanel();
+}
+
+/* ============================================================
+   ADMIN: SCHOLARSHIPS
+============================================================ */
+function buildAdmScholarships(){
+  const pendingApps = db.scholarshipApps.filter(a=>a.status==='pending');
+  return `
+  <div class="pageHead"><div class="eyebrow">Support</div><h2>Scholarships</h2><p>Manage scholarships and applications.</p></div>
+  <div class="card">
+    <h3>Scholarship Catalogue <button class="btn primary small" onclick="openScholarshipForm()">+ Add Scholarship</button></h3>
+    ${db.scholarships.map(sc=>`
+      <div class="itemRow">
+        <div class="info"><b>${esc(sc.name)}</b><span>${esc(sc.description)} — Eligibility: ${esc(sc.eligibility)}</span></div>
+        <div class="rowFlex">
+          <button class="btn small outline" onclick="openScholarshipForm('${sc.id}')">Edit</button>
+          <button class="btn small maroon" onclick="deleteScholarship('${sc.id}')">Delete</button>
+        </div>
+      </div>`).join('') || '<div class="emptyState">No scholarships in catalogue.</div>'}
+  </div>
+  <div class="card">
+    <h3>Applications <span class="tag">${pendingApps.length} pending</span></h3>
+    ${db.scholarshipApps.slice().reverse().map(a=>{
+      const s = db.students.find(x=>x.id===a.studentId);
+      const sc = db.scholarships.find(x=>x.id===a.scholarshipId);
+      return `
+      <div class="itemRow">
+        <div class="info"><b>${esc(s?s.name:'Unknown')}</b><span>${esc(sc?sc.name:'Unknown scholarship')} · ${esc(a.date)}</span></div>
+        <div class="rowFlex">
+          <span class="pill ${a.status==='approved'?'green':a.status==='rejected'?'red':'gold'}">${a.status}</span>
+          ${a.status==='pending' ? `
+          <button class="btn small primary" onclick="reviewScholarshipApp('${a.id}','approved')">Approve</button>
+          <button class="btn small maroon" onclick="reviewScholarshipApp('${a.id}','rejected')">Reject</button>` : ''}
+        </div>
+      </div>`;
+    }).join('') || '<div class="emptyState">No scholarship applications yet.</div>'}
+  </div>`;
+}
+function openScholarshipForm(id){
+  const sc = id ? db.scholarships.find(x=>x.id===id) : null;
+  openModal(`
+    <h2>${sc?'Edit':'Add'} Scholarship</h2>
+    <input type="hidden" id="scf_id" value="${sc?sc.id:''}">
+    <div class="fGroup"><label>Name</label><input id="scf_name" value="${escAttr(sc?sc.name:'')}"></div>
+    <div class="fGroup"><label>Description</label><textarea id="scf_description">${esc(sc?sc.description:'')}</textarea></div>
+    <div class="fGroup"><label>Eligibility</label><input id="scf_eligibility" value="${escAttr(sc?sc.eligibility:'')}"></div>
+    <div class="modalActions">
+      <button class="btn outline" onclick="closeModal()">Cancel</button>
+      <button class="btn primary" onclick="saveScholarship()">Save</button>
+    </div>
+  `);
+}
+function saveScholarship(){
+  const id = document.getElementById('scf_id').value;
+  const data = {
+    name: document.getElementById('scf_name').value.trim(),
+    description: document.getElementById('scf_description').value.trim(),
+    eligibility: document.getElementById('scf_eligibility').value.trim(),
+  };
+  if(!data.name){ showToast('Name is required.'); return; }
+  if(id){ Object.assign(db.scholarships.find(x=>x.id===id), data); }
+  else { db.scholarships.push(Object.assign({id:uid()}, data)); }
+  saveDB(); closeModal(); showToast('Scholarship saved.'); refreshCurrentPanel();
+}
+function deleteScholarship(id){
+  if(!confirm('Delete this scholarship? Existing applications for it will remain on record.')) return;
+  db.scholarships = db.scholarships.filter(s=>s.id!==id);
+  saveDB(); showToast('Scholarship deleted.'); refreshCurrentPanel();
+}
+function reviewScholarshipApp(id, status){
+  const a = db.scholarshipApps.find(x=>x.id===id);
+  a.status = status;
+  saveDB(); showToast('Application '+status+'.'); refreshCurrentPanel();
+}
+
+/* ============================================================
+   STUDENT: DASHBOARD
+============================================================ */
+function buildStuDashboard(){
+  const s = currentStudent();
+  if(!s) return '<div class="emptyState">Student record not found.</div>';
+  const myApps = db.applications.filter(a=>a.studentId===s.id);
+  const myVouchers = db.vouchers.filter(v=>v.studentId===s.id);
+  const unpaidVouchers = myVouchers.filter(v=>v.status!=='paid').length;
+  const myPlans = db.installmentPlans.filter(p=>p.studentId===s.id);
+  const dueInstallments = myPlans.reduce((n,p)=> n + p.schedule.filter(r=>r.status!=='paid').length, 0);
+  return `
+  <div class="pageHead"><div class="eyebrow">Welcome back</div><h2>Assalam-o-Alaikum, ${esc(s.name.split(' ')[0])}</h2><p>Your account at a glance.</p></div>
+  <div class="grid4">
+    <div class="statCard"><div class="lbl">Semester Results</div><div class="val">${(s.results||[]).length}</div><div class="sub">Semesters recorded</div></div>
+    <div class="statCard"><div class="lbl">My Applications</div><div class="val">${myApps.length}</div><div class="sub">${myApps.filter(a=>a.status==='pending').length} pending</div></div>
+    <div class="statCard"><div class="lbl">Fee Vouchers</div><div class="val">${myVouchers.length}</div><div class="sub">${unpaidVouchers} unpaid</div></div>
+    <div class="statCard"><div class="lbl">Installments Due</div><div class="val">${dueInstallments}</div><div class="sub">Across ${myPlans.length} plan(s)</div></div>
+  </div>
+  <div class="card">
+    <h3>Your Profile</h3>
+    <table>
+      <tbody>
+        <tr><td style="color:var(--ink-soft);width:35%;">Full Name</td><td><b>${esc(s.name)}</b></td></tr>
+        <tr><td style="color:var(--ink-soft);">Registration No.</td><td class="mono">${esc(s.regNo)}</td></tr>
+        <tr><td style="color:var(--ink-soft);">Programme</td><td>${esc(s.program)}</td></tr>
+        <tr><td style="color:var(--ink-soft);">Current Semester</td><td>${esc(s.currentSemester)}</td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:11.5px;color:var(--ink-soft);margin-top:10px;">To update your profile details, please contact the portal admin.</p>
+  </div>`;
+}
+
+/* ============================================================
+   STUDENT: MY RESULT (read-only)
+============================================================ */
+function buildStuResult(){
+  const s = currentStudent();
+  return `
+  <div class="pageHead"><div class="eyebrow">Academics</div><h2>My Result</h2><p>Your official semester results.</p></div>
+  ${(s.results||[]).map(sem=>`
+    <div class="card">
+      <h3>${esc(sem.semester)}</h3>
+      <table>
+        <thead><tr><th>Course</th><th>Title</th><th>Credit</th><th>Grade</th></tr></thead>
+        <tbody>${sem.courses.map(c=>`<tr><td class="mono">${esc(c.code)}</td><td>${esc(c.title)}</td><td>${esc(c.credit)}</td><td><b>${esc(c.grade)}</b></td></tr>`).join('')}</tbody>
+      </table>
+    </div>`).join('') || '<div class="emptyState">No results have been published yet.</div>'}`;
+}
+
+/* ============================================================
+   STUDENT: LECTURES (read-only)
+============================================================ */
+function buildStuLectures(){
+  return `
+  <div class="pageHead"><div class="eyebrow">Academics</div><h2>Lectures</h2><p>Materials shared by your teachers.</p></div>
+  <div class="card">
+    ${db.lectures.map(l=>`
+      <div class="itemRow">
+        <div class="info"><b>${esc(l.title)}</b><span>${esc(l.course)} · ${esc(l.teacher)} · ${esc(l.date)}</span></div>
+        ${l.link ? `<a href="${escAttr(l.link)}" target="_blank" class="btn small outline">Open</a>` : ''}
+      </div>`).join('') || '<div class="emptyState">No lectures have been shared yet.</div>'}
+  </div>`;
+}
+
+/* ============================================================
+   STUDENT: APPLY AGAINST TEACHER
+============================================================ */
+function buildStuApply(){
+  const s = currentStudent();
+  const myApps = db.applications.filter(a=>a.studentId===s.id).slice().reverse();
+  return `
+  <div class="pageHead"><div class="eyebrow">Requests</div><h2>Apply Against a Teacher</h2><p>Submit an application against a teacher.</p></div>
+  <div class="card">
+    <h3>New Application</h3>
+    <div class="fGroup"><label>Teacher's Name</label><input id="apf_teacher" placeholder="e.g. Dr. Ahmed Khan"></div>
+    <div class="fGroup"><label>Subject</label><input id="apf_subject" placeholder="Short subject / title"></div>
+    <div class="fGroup"><label>Details</label><textarea id="apf_message" placeholder="Describe your application in detail..."></textarea></div>
+    <button class="btn primary" onclick="submitApplication()">Submit Application</button>
+  </div>
+  <div class="card">
+    <h3>My Applications</h3>
+    ${myApps.map(a=>`
+      <div class="itemRow" style="align-items:flex-start;flex-direction:column;">
+        <div style="display:flex;justify-content:space-between;width:100%;flex-wrap:wrap;gap:8px;">
+          <div class="info"><b>${esc(a.subject)}</b><span>Against: ${esc(a.teacher)} · ${esc(a.date)}</span></div>
+          <span class="pill ${a.status==='approved'?'green':a.status==='rejected'?'red':'gold'}">${a.status}</span>
+        </div>
+        <p style="font-size:12.5px;color:var(--ink-soft);margin-top:6px;">${esc(a.message)}</p>
+        ${a.reply?`<p style="font-size:12px;color:var(--navy);margin-top:6px;"><b>Admin reply:</b> ${esc(a.reply)}</p>`:''}
+      </div>`).join('') || '<div class="emptyState">You have not submitted any applications yet.</div>'}
+  </div>`;
+}
+function submitApplication(){
+  const s = currentStudent();
+  const teacher = document.getElementById('apf_teacher').value.trim();
+  const subject = document.getElementById('apf_subject').value.trim();
+  const message = document.getElementById('apf_message').value.trim();
+  if(!teacher || !subject || !message){ showToast('Please fill in all fields.'); return; }
+  db.applications.push({ id:uid(), studentId:s.id, teacher, subject, message, status:'pending', reply:'', date:new Date().toISOString().slice(0,10) });
+  saveDB(); showToast('Application submitted.'); refreshCurrentPanel();
+}
+
+/* ============================================================
+   STUDENT: FEE VOUCHERS (download + upload paid receipt)
+============================================================ */
+function buildStuVouchers(){
+  const s = currentStudent();
+  const myVouchers = db.vouchers.filter(v=>v.studentId===s.id).slice().reverse();
+  return `
+  <div class="pageHead"><div class="eyebrow">Finance</div><h2>Fee Vouchers</h2><p>Download your voucher and upload your receipt.</p></div>
+  <div class="card">
+    ${myVouchers.map(v=>`
+      <div class="itemRow">
+        <div class="info"><b>${esc(v.semester)} — PKR ${esc(v.amount)}</b><span>Due: ${esc(v.dueDate)} ${v.receiptName?('· Uploaded: '+esc(v.receiptName)):''}</span></div>
+        <div class="rowFlex">
+          <span class="pill ${v.status==='paid'?'green':v.status==='submitted'?'gold':'red'}">${v.status}</span>
+          <button class="btn small outline" onclick="printVoucher('${v.id}')">Download / Print</button>
+          ${v.status!=='paid' ? `
+          <label class="btn small primary" style="margin:0;">
+            Upload Paid Receipt
+            <input type="file" accept="image/*,.pdf" style="display:none;" onchange="uploadReceipt('${v.id}', this)">
+          </label>` : ''}
+        </div>
+      </div>`).join('') || '<div class="emptyState">No fee vouchers have been issued to you yet.</div>'}
+  </div>`;
+}
+function printVoucher(id){
+  const v = db.vouchers.find(x=>x.id===id);
+  const s = currentStudent();
+  const w = window.open('', '_blank');
+  w.document.write(`
+    <html><head><title>Fee Voucher</title>
+    <style>body{font-family:Arial,sans-serif;padding:40px;color:#111;}h1{font-size:20px;}table{width:100%;border-collapse:collapse;margin-top:20px;}td{padding:10px;border-bottom:1px solid #ccc;}td:first-child{color:#666;width:40%;}</style>
+    </head><body>
+    <h1>Unique Student Cooperation — Fee Voucher</h1>
+    <table>
+      <tr><td>Student Name</td><td><b>${esc(s.name)}</b></td></tr>
+      <tr><td>Registration No.</td><td>${esc(s.regNo)}</td></tr>
+      <tr><td>Semester</td><td>${esc(v.semester)}</td></tr>
+      <tr><td>Amount</td><td><b>PKR ${esc(v.amount)}</b></td></tr>
+      <tr><td>Due Date</td><td>${esc(v.dueDate)}</td></tr>
+      <tr><td>Status</td><td>${esc(v.status)}</td></tr>
+    </table>
+    <p style="margin-top:30px;font-size:12px;color:#666;">Please pay before the due date and upload your paid receipt on the student portal.</p>
+    <script>window.print()<\/script>
+    </body></html>`);
+  w.document.close();
+}
+function uploadReceipt(voucherId, inputEl){
+  const file = inputEl.files[0];
+  if(!file) return;
+  if(file.size > 4*1024*1024){ showToast('File too large — please upload an image/PDF under 4MB.'); return; }
+  const reader = new FileReader();
+  reader.onload = function(e){
+    const v = db.vouchers.find(x=>x.id===voucherId);
+    v.receiptData = e.target.result;
+    v.receiptName = file.name;
+    v.uploadedDate = new Date().toISOString().slice(0,10);
+    v.status = 'submitted';
+    saveDB(); showToast('Receipt uploaded — awaiting admin review.'); refreshCurrentPanel();
+  };
+  reader.readAsDataURL(file);
+}
+
+/* ============================================================
+   STUDENT: INSTALLMENTS (read-only)
+============================================================ */
+function buildStuInstallments(){
+  const s = currentStudent();
+  const myPlans = db.installmentPlans.filter(p=>p.studentId===s.id);
+  return `
+  <div class="pageHead"><div class="eyebrow">Finance</div><h2>Installments</h2><p>Your installment plans.</p></div>
+  ${myPlans.map(p=>`
+    <div class="card">
+      <h3>${esc(p.title)} <span class="tag">Total: PKR ${esc(p.totalAmount)}</span></h3>
+      <table>
+        <thead><tr><th>#</th><th>Amount</th><th>Due Date</th><th>Status</th></tr></thead>
+        <tbody>${p.schedule.map(row=>`<tr><td>${row.no}</td><td class="mono">${esc(row.amount)}</td><td class="mono">${esc(row.dueDate)}</td><td><span class="pill ${row.status==='paid'?'green':'gold'}">${row.status}</span></td></tr>`).join('')}</tbody>
+      </table>
+    </div>`).join('') || '<div class="emptyState">No installment plans set up for you yet.</div>'}
+  `;
+}
+
+/* ============================================================
+   STUDENT: SCHOLARSHIPS (view + apply)
+============================================================ */
+function buildStuScholarships(){
+  const s = currentStudent();
+  const myApps = db.scholarshipApps.filter(a=>a.studentId===s.id);
+  return `
+  <div class="pageHead"><div class="eyebrow">Support</div><h2>Scholarships</h2><p>Browse and apply for scholarships.</p></div>
+  <div class="grid3">
+    ${db.scholarships.map(sc=>{
+      const applied = myApps.find(a=>a.scholarshipId===sc.id);
+      return `
+      <div class="card">
+        <h3>${esc(sc.name)}</h3>
+        <p style="font-size:12.5px;color:var(--ink-soft);margin-bottom:12px;">${esc(sc.description)}</p>
+        <span class="pill navy">${esc(sc.eligibility)}</span>
+        <div style="margin-top:14px;">
+          ${applied ? `<span class="pill ${applied.status==='approved'?'green':applied.status==='rejected'?'red':'gold'}">${applied.status}</span>` : `<button class="btn small primary" onclick="applyScholarship('${sc.id}')">Apply Now</button>`}
+        </div>
+      </div>`;
+    }).join('') || '<div class="emptyState">No scholarships available right now.</div>'}
+  </div>`;
+}
+function applyScholarship(scholarshipId){
+  const s = currentStudent();
+  if(db.scholarshipApps.find(a=>a.studentId===s.id && a.scholarshipId===scholarshipId)){ showToast('You already applied for this scholarship.'); return; }
+  db.scholarshipApps.push({ id:uid(), studentId:s.id, scholarshipId, status:'pending', date:new Date().toISOString().slice(0,10) });
+  saveDB(); showToast('Scholarship application submitted.'); refreshCurrentPanel();
+}
+
+/* ============================================================
+   ADMIN: TIME TABLE
+============================================================ */
+function buildAdmTimetable(){
+  return `
+  <div class="pageHead"><div class="eyebrow">Academics</div><h2>Time Table</h2><p>Set up the weekly class schedule.</p></div>
+  <div class="card">
+    <h3>Weekly Schedule <button class="btn primary small" onclick="openTimetableForm()">+ Add Entry</button></h3>
+    <table>
+      <thead><tr><th>Day</th><th>Time</th><th>Course</th><th>Teacher</th><th>Room</th><th></th></tr></thead>
+      <tbody>
+        ${db.timetable.map(t=>`
+          <tr>
+            <td><b>${esc(t.day)}</b></td><td class="mono">${esc(t.time)}</td><td>${esc(t.course)}</td><td>${esc(t.teacher)}</td><td>${esc(t.room)}</td>
+            <td>
+              <button class="btn small outline" onclick="openTimetableForm('${t.id}')">Edit</button>
+              <button class="btn small maroon" onclick="deleteTimetableEntry('${t.id}')">Delete</button>
+            </td>
+          </tr>`).join('') || `<tr><td colspan="6"><div class="emptyState">No timetable entries yet.</div></td></tr>`}
+      </tbody>
+    </table>
+  </div>`;
+}
+function openTimetableForm(id){
+  const t = id ? db.timetable.find(x=>x.id===id) : null;
+  const v = (f,d='')=> t ? (t[f] ?? d) : d;
+  openModal(`
+    <h2>${t?'Edit':'Add'} Timetable Entry</h2>
+    <input type="hidden" id="ttf_id" value="${t?t.id:''}">
+    <div class="formGrid">
+      <div class="fGroup"><label>Day</label><input id="ttf_day" value="${escAttr(v('day'))}" placeholder="Monday"></div>
+      <div class="fGroup"><label>Time</label><input id="ttf_time" value="${escAttr(v('time'))}" placeholder="9:00 AM – 10:30 AM"></div>
+      <div class="fGroup"><label>Course</label><input id="ttf_course" value="${escAttr(v('course'))}" placeholder="CS-101 Intro to Computing"></div>
+      <div class="fGroup"><label>Teacher</label><input id="ttf_teacher" value="${escAttr(v('teacher'))}"></div>
+      <div class="fGroup"><label>Room</label><input id="ttf_room" value="${escAttr(v('room'))}"></div>
+    </div>
+    <div class="modalActions">
+      <button class="btn outline" onclick="closeModal()">Cancel</button>
+      <button class="btn primary" onclick="saveTimetableEntry()">Save</button>
+    </div>
+  `);
+}
+function saveTimetableEntry(){
+  const id = document.getElementById('ttf_id').value;
+  const data = {
+    day: document.getElementById('ttf_day').value.trim(),
+    time: document.getElementById('ttf_time').value.trim(),
+    course: document.getElementById('ttf_course').value.trim(),
+    teacher: document.getElementById('ttf_teacher').value.trim(),
+    room: document.getElementById('ttf_room').value.trim(),
+  };
+  if(!data.day || !data.time || !data.course){ showToast('Day, Time and Course are required.'); return; }
+  if(id){ Object.assign(db.timetable.find(x=>x.id===id), data); }
+  else { db.timetable.push(Object.assign({ id: uid() }, data)); }
+  saveDB(); closeModal(); showToast('Timetable entry saved.'); refreshCurrentPanel();
+}
+function deleteTimetableEntry(id){
+  if(!confirm('Delete this timetable entry?')) return;
+  db.timetable = db.timetable.filter(t=>t.id!==id);
+  saveDB(); showToast('Entry deleted.'); refreshCurrentPanel();
+}
+
+/* ============================================================
+   ADMIN: SUPPORT TICKETS
+============================================================ */
+function buildAdmTickets(){
+  const list = db.tickets.slice().reverse();
+  return `
+  <div class="pageHead"><div class="eyebrow">Support</div><h2>Support Tickets</h2><p>Respond to student tickets.</p></div>
+  <div class="card">
+    ${list.map(t=>{
+      const s = db.students.find(x=>x.id===t.studentId);
+      return `
+      <div class="itemRow" style="align-items:flex-start;">
+        <div class="info">
+          <b>${esc(t.subject)}</b>
+          <span>${esc(s?s.name:'Unknown student')} · ${esc(t.date)}</span>
+          <p style="font-size:12.5px;color:var(--ink);margin-top:8px;">${esc(t.message)}</p>
+          ${t.reply ? `<p style="font-size:12.5px;color:var(--success);margin-top:8px;"><b>Admin reply:</b> ${esc(t.reply)}</p>` : ''}
+        </div>
+        <div class="rowFlex">
+          <span class="pill ${t.status==='closed'?'green':t.status==='replied'?'gold':'red'}">${esc(t.status)}</span>
+          ${t.status!=='closed' ? `<button class="btn small primary" onclick="openTicketReplyForm('${t.id}')">Reply</button>
+          <button class="btn small outline" onclick="closeTicket('${t.id}')">Mark Closed</button>` : ''}
+        </div>
+      </div>`;
+    }).join('') || '<div class="emptyState">No support tickets have been raised yet.</div>'}
+  </div>`;
+}
+function openTicketReplyForm(id){
+  const t = db.tickets.find(x=>x.id===id);
+  openModal(`
+    <h2>Reply to Ticket</h2>
+    <p class="sub">${esc(t.subject)}</p>
+    <input type="hidden" id="trf_id" value="${t.id}">
+    <div class="fGroup"><label>Your Reply</label><textarea id="trf_reply" placeholder="Type your response...">${esc(t.reply||'')}</textarea></div>
+    <div class="modalActions">
+      <button class="btn outline" onclick="closeModal()">Cancel</button>
+      <button class="btn primary" onclick="saveTicketReply()">Send Reply</button>
+    </div>
+  `);
+}
+function saveTicketReply(){
+  const id = document.getElementById('trf_id').value;
+  const reply = document.getElementById('trf_reply').value.trim();
+  if(!reply){ showToast('Please write a reply.'); return; }
+  const t = db.tickets.find(x=>x.id===id);
+  t.reply = reply; t.status='replied';
+  saveDB(); closeModal(); showToast('Reply sent.'); refreshCurrentPanel();
+}
+function closeTicket(id){
+  const t = db.tickets.find(x=>x.id===id);
+  t.status='closed';
+  saveDB(); showToast('Ticket closed.'); refreshCurrentPanel();
+}
+
+/* ============================================================
+   ADMIN: DOCUMENT REPOSITORY
+============================================================ */
+function buildAdmDocuments(){
+  return `
+  <div class="pageHead"><div class="eyebrow">Resources</div><h2>Document Repository</h2><p>Upload documents, forms and notices.</p></div>
+  <div class="card">
+    <h3>All Documents <label class="btn small primary" style="margin:0;">+ Upload Document
+      <input type="file" style="display:none;" onchange="uploadRepoDoc(this)">
+    </label></h3>
+    ${db.documents.slice().reverse().map(d=>`
+      <div class="itemRow">
+        <div class="info"><b>${esc(d.title)}</b><span>${esc(d.category)} · Uploaded ${esc(d.date)}</span></div>
+        <div class="rowFlex">
+          <a class="btn small outline" href="${d.fileData}" download="${escAttr(d.title)}">Download</a>
+          <button class="btn small maroon" onclick="deleteRepoDoc('${d.id}')">Delete</button>
+        </div>
+      </div>`).join('') || '<div class="emptyState">No documents uploaded yet.</div>'}
+  </div>`;
+}
+function uploadRepoDoc(inputEl){
+  const file = inputEl.files[0];
+  if(!file) return;
+  if(file.size > 4*1024*1024){ showToast('File too large — please upload a file under 4MB.'); return; }
+  const reader = new FileReader();
+  reader.onload = function(e){
+    db.documents.push({ id:uid(), title:file.name, category:'General', fileData:e.target.result, date:new Date().toISOString().slice(0,10) });
+    saveDB(); showToast('Document uploaded.'); refreshCurrentPanel();
+  };
+  reader.readAsDataURL(file);
+}
+function deleteRepoDoc(id){
+  if(!confirm('Delete this document?')) return;
+  db.documents = db.documents.filter(d=>d.id!==id);
+  saveDB(); showToast('Document deleted.'); refreshCurrentPanel();
+}
+
+/* ============================================================
+   ADMIN: SETTINGS (profile, password, portal access)
+============================================================ */
+function buildAdmSettings(){
+  const isMainAdmin = !currentUser.staffId;
+  return `
+  <div class="pageHead"><div class="eyebrow">Administration</div><h2>Settings</h2><p>Update your profile, password and portal access.</p></div>
+
+  <div class="card">
+    <h3>My Profile</h3>
+    ${isMainAdmin ? `
+      <div class="formGrid">
+        <div class="fGroup"><label>Display Name</label><input id="ap_name" value="${escAttr(db.admin.name)}"></div>
+        <div class="fGroup"><label>Email</label><input id="ap_email" value="${escAttr(db.admin.email)}" placeholder="you@example.com"></div>
+        <div class="fGroup"><label>Admin Username</label><input id="ap_username" value="${escAttr(db.admin.username)}"></div>
+      </div>
+      <div class="rowFlex" style="margin-top:10px;"><button class="btn primary small" onclick="saveAdminProfile()">Save Profile</button></div>
+    ` : `
+      <div class="formGrid">
+        <div class="fGroup"><label>Display Name</label><input id="ap_staff_name" value="${escAttr((db.staff.find(s=>s.id===currentUser.staffId)||{}).name||'')}"></div>
+      </div>
+      <div class="rowFlex" style="margin-top:10px;"><button class="btn primary small" onclick="saveStaffProfile()">Save Profile</button></div>
+      <p class="loginNote" style="text-align:left;margin-top:12px;">Managed by the main admin.</p>
+    `}
+  </div>
+
+  <div class="card">
+    <h3>Change Password</h3>
+    ${isMainAdmin ? `
+      <div class="formGrid">
+        <div class="fGroup"><label>Current Password</label><input type="password" id="cp_current"></div>
+        <div class="fGroup"></div>
+        <div class="fGroup"><label>New Password</label><input type="password" id="cp_new"></div>
+        <div class="fGroup"><label>Confirm New Password</label><input type="password" id="cp_confirm"></div>
+      </div>
+      <div class="rowFlex" style="margin-top:10px;"><button class="btn primary small" onclick="changeAdminPassword()">Update Password</button></div>
+    ` : `
+      <div class="formGrid">
+        <div class="fGroup"><label>Current Password</label><input type="password" id="cp_current"></div>
+        <div class="fGroup"></div>
+        <div class="fGroup"><label>New Password</label><input type="password" id="cp_new"></div>
+        <div class="fGroup"><label>Confirm New Password</label><input type="password" id="cp_confirm"></div>
+      </div>
+      <div class="rowFlex" style="margin-top:10px;"><button class="btn primary small" onclick="changeStaffPassword()">Update Password</button></div>
+    `}
+  </div>
+
+  ${isMainAdmin ? `
+  <div class="card">
+    <h3>Portal Access <button class="btn primary small" onclick="openStaffForm()">+ Give Access</button></h3>
+    <p class="sub" style="margin-bottom:14px;">Accounts listed here can sign in from the Admin tab using their own username and password.</p>
+    <table>
+      <thead><tr><th>Name</th><th>Username</th><th>Password</th><th></th></tr></thead>
+      <tbody>
+        ${db.staff.map(st=>`
+          <tr>
+            <td><b>${esc(st.name)}</b></td>
+            <td class="mono">${esc(st.username)}</td>
+            <td class="mono">${esc(st.password)}</td>
+            <td>
+              <button class="btn small outline" onclick="openStaffForm('${st.id}')">Edit</button>
+              <button class="btn small maroon" onclick="deleteStaff('${st.id}')">Remove</button>
+            </td>
+          </tr>`).join('') || `<tr><td colspan="4"><div class="emptyState">No one else has portal access yet.</div></td></tr>`}
+      </tbody>
+    </table>
+  </div>` : ''}`;
+}
+function saveAdminProfile(){
+  const name = document.getElementById('ap_name').value.trim();
+  const email = document.getElementById('ap_email').value.trim();
+  const username = document.getElementById('ap_username').value.trim();
+  if(!name || !username){ showToast('Name and username are required.'); return; }
+  db.admin.name = name; db.admin.email = email; db.admin.username = username;
+  saveDB(); showToast('Profile updated.');
+  document.getElementById('avatarInitials').textContent = initials(currentAdminName());
+  document.getElementById('avatarName').textContent = currentAdminName();
+}
+function saveStaffProfile(){
+  const st = db.staff.find(x=>x.id===currentUser.staffId);
+  if(!st) return;
+  const name = document.getElementById('ap_staff_name').value.trim();
+  if(!name){ showToast('Name is required.'); return; }
+  st.name = name;
+  saveDB(); showToast('Profile updated.');
+  document.getElementById('avatarInitials').textContent = initials(currentAdminName());
+  document.getElementById('avatarName').textContent = currentAdminName();
+}
+function changeAdminPassword(){
+  const current = document.getElementById('cp_current').value;
+  const next = document.getElementById('cp_new').value;
+  const confirm2 = document.getElementById('cp_confirm').value;
+  if(current!==db.admin.password){ showToast('Current password is incorrect.'); return; }
+  if(!next || next.length<6){ showToast('New password must be at least 6 characters.'); return; }
+  if(next!==confirm2){ showToast('New password and confirmation do not match.'); return; }
+  db.admin.password = next;
+  saveDB(); showToast('Password updated.'); refreshCurrentPanel();
+}
+function changeStaffPassword(){
+  const st = db.staff.find(x=>x.id===currentUser.staffId);
+  if(!st) return;
+  const current = document.getElementById('cp_current').value;
+  const next = document.getElementById('cp_new').value;
+  const confirm2 = document.getElementById('cp_confirm').value;
+  if(current!==st.password){ showToast('Current password is incorrect.'); return; }
+  if(!next || next.length<6){ showToast('New password must be at least 6 characters.'); return; }
+  if(next!==confirm2){ showToast('New password and confirmation do not match.'); return; }
+  st.password = next;
+  saveDB(); showToast('Password updated.'); refreshCurrentPanel();
+}
+function openStaffForm(id){
+  const st = id ? db.staff.find(x=>x.id===id) : null;
+  const v = (f,d='')=> st ? (st[f] ?? d) : d;
+  openModal(`
+    <h2>${st?'Edit Access':'Give Portal Access'}</h2>
+    <p class="sub">They can sign in from the Admin tab.</p>
+    <input type="hidden" id="stf_id" value="${st?st.id:''}">
+    <div class="formGrid">
+      <div class="fGroup full"><label>Full Name</label><input id="stf_name" value="${escAttr(v('name'))}"></div>
+      <div class="fGroup"><label>Username</label><input id="stf_username" value="${escAttr(v('username'))}"></div>
+      <div class="fGroup"><label>Password</label><input id="stf_password" value="${escAttr(v('password'))}" placeholder="Set login password"></div>
+    </div>
+    <div class="modalActions">
+      <button class="btn outline" onclick="closeModal()">Cancel</button>
+      <button class="btn primary" onclick="saveStaff()">${st?'Save Changes':'Grant Access'}</button>
+    </div>
+  `);
+}
+function saveStaff(){
+  const id = document.getElementById('stf_id').value;
+  const name = document.getElementById('stf_name').value.trim();
+  const username = document.getElementById('stf_username').value.trim();
+  const password = document.getElementById('stf_password').value.trim();
+  if(!name || !username || !password){ showToast('Name, username and password are required.'); return; }
+  if(username===db.admin.username || db.staff.find(s=>s.username.toLowerCase()===username.toLowerCase() && s.id!==id)){
+    showToast('That username is already taken.'); return;
+  }
+  if(id){
+    const st = db.staff.find(x=>x.id===id);
+    Object.assign(st, { name, username, password });
+  } else {
+    db.staff.push({ id: uid(), name, username, password });
+  }
+  saveDB(); closeModal(); showToast('Portal access saved.'); refreshCurrentPanel();
+}
+function deleteStaff(id){
+  if(!confirm('Remove this person\'s portal access? They will no longer be able to sign in.')) return;
+  db.staff = db.staff.filter(s=>s.id!==id);
+  saveDB(); showToast('Access removed.'); refreshCurrentPanel();
+}
+
+/* ============================================================
+   ADMIN: TRIPS & TOURS
+============================================================ */
+function buildAdmTrips(){
+  const toReview = db.tripVouchers.filter(v=>v.status==='submitted');
+  return `
+  <div class="pageHead"><div class="eyebrow">Activities</div><h2>Trips & Tours</h2><p>Create trips, manage participants and fee vouchers.</p></div>
+  <div class="card">
+    <h3>Trip Catalogue <button class="btn primary small" onclick="openTripForm()">+ New Trip</button></h3>
+    ${db.trips.slice().reverse().map(t=>{
+      const count = db.tripVouchers.filter(v=>v.tripId===t.id).length;
+      return `
+      <div class="itemRow">
+        <div class="info"><b>${esc(t.title)}</b><span>${esc(t.destination)} · ${esc(t.date)} · Fee: PKR ${esc(t.fee)} · ${count}/${esc(t.seats||'∞')} joined</span></div>
+        <div class="rowFlex">
+          <button class="btn small outline" onclick="openTripParticipants('${t.id}')">Participants</button>
+          <button class="btn small outline" onclick="openTripForm('${t.id}')">Edit</button>
+          <button class="btn small maroon" onclick="deleteTrip('${t.id}')">Delete</button>
+        </div>
+      </div>`;
+    }).join('') || '<div class="emptyState">No trips created yet.</div>'}
+  </div>
+  <div class="card">
+    <h3>Receipts Awaiting Review <span class="tag">${toReview.length} pending</span></h3>
+    ${toReview.map(v=>{
+      const s = db.students.find(x=>x.id===v.studentId);
+      const t = db.trips.find(x=>x.id===v.tripId);
+      return `
+      <div class="itemRow">
+        <div class="info"><b>${esc(s?s.name:'Unknown')} · ${esc(t?t.title:'Trip')}</b><span>Amount: PKR ${esc(v.amount)} · Uploaded: ${esc(v.uploadedDate||'')}</span></div>
+        <div class="rowFlex">
+          ${v.receiptData ? `<button class="btn small outline" onclick="viewTripReceipt('${v.id}')">View Receipt</button>` : ''}
+          <button class="btn small primary" onclick="reviewTripVoucher('${v.id}','paid')">Mark Paid</button>
+          <button class="btn small maroon" onclick="reviewTripVoucher('${v.id}','unpaid')">Reject</button>
+        </div>
+      </div>`;
+    }).join('') || '<div class="emptyState">No receipts pending review.</div>'}
+  </div>`;
+}
+function openTripForm(id){
+  const t = id ? db.trips.find(x=>x.id===id) : null;
+  openModal(`
+    <h2>${t?'Edit Trip':'New Trip'}</h2>
+    <input type="hidden" id="tp_id" value="${t?t.id:''}">
+    <div class="formGrid">
+      <div class="fGroup full"><label>Trip Title</label><input id="tp_title" value="${escAttr(t?t.title:'')}" placeholder="Northern Areas Tour"></div>
+      <div class="fGroup"><label>Destination</label><input id="tp_destination" value="${escAttr(t?t.destination:'')}"></div>
+      <div class="fGroup"><label>Date</label><input id="tp_date" value="${escAttr(t?t.date:'')}" placeholder="15-Oct-2026"></div>
+      <div class="fGroup"><label>Fee (PKR)</label><input id="tp_fee" value="${escAttr(t?t.fee:'')}"></div>
+      <div class="fGroup"><label>Seats (optional)</label><input id="tp_seats" value="${escAttr(t?t.seats:'')}"></div>
+      <div class="fGroup full"><label>Description</label><textarea id="tp_description">${esc(t?t.description:'')}</textarea></div>
+    </div>
+    <div class="modalActions">
+      <button class="btn outline" onclick="closeModal()">Cancel</button>
+      <button class="btn primary" onclick="saveTrip()">${t?'Save Changes':'Create Trip'}</button>
+    </div>
+  `);
+}
+function saveTrip(){
+  const id = document.getElementById('tp_id').value;
+  const data = {
+    title: document.getElementById('tp_title').value.trim(),
+    destination: document.getElementById('tp_destination').value.trim(),
+    date: document.getElementById('tp_date').value.trim(),
+    fee: document.getElementById('tp_fee').value.trim(),
+    seats: document.getElementById('tp_seats').value.trim(),
+    description: document.getElementById('tp_description').value.trim(),
+  };
+  if(!data.title || !data.fee){ showToast('Title and fee are required.'); return; }
+  if(id){ Object.assign(db.trips.find(x=>x.id===id), data); }
+  else { db.trips.push(Object.assign({id:uid()}, data)); }
+  saveDB(); closeModal(); showToast('Trip saved.'); refreshCurrentPanel();
+}
+function deleteTrip(id){
+  if(!confirm('Delete this trip? All related participant vouchers will also be removed.')) return;
+  db.trips = db.trips.filter(t=>t.id!==id);
+  db.tripVouchers = db.tripVouchers.filter(v=>v.tripId!==id);
+  saveDB(); showToast('Trip deleted.'); refreshCurrentPanel();
+}
+function openTripParticipants(tripId){
+  const t = db.trips.find(x=>x.id===tripId);
+  if(!db.students.length){ showToast('Add a student first.'); return; }
+  openModal(`
+    <h2>Participants — ${esc(t.title)}</h2>
+    <p class="sub">Tick a student to add them (creates their fee voucher). Untick to remove.</p>
+    <table>
+      <thead><tr><th>Student</th><th>Reg No.</th><th>Status</th><th></th></tr></thead>
+      <tbody>
+        ${db.students.map(s=>{
+          const v = db.tripVouchers.find(x=>x.tripId===tripId && x.studentId===s.id);
+          return `<tr>
+            <td>${esc(s.name)}</td><td class="mono">${esc(s.regNo)}</td>
+            <td>${v?`<span class="pill ${v.status==='paid'?'green':v.status==='submitted'?'gold':'red'}">${v.status}</span>`:'<span class="pill">not joined</span>'}</td>
+            <td>${v ? `<button class="btn small maroon" onclick="removeTripParticipant('${v.id}','${tripId}')">Remove</button>` : `<button class="btn small primary" onclick="addTripParticipant('${tripId}','${s.id}')">Add</button>`}</td>
+          </tr>`;
+        }).join('')}
+      </tbody>
+    </table>
+    <div class="modalActions"><button class="btn outline" onclick="closeModal()">Close</button></div>
+  `);
+}
+function addTripParticipant(tripId, studentId){
+  const t = db.trips.find(x=>x.id===tripId);
+  db.tripVouchers.push({ id:uid(), tripId, studentId, amount:t.fee, dueDate:t.date, status:'unpaid', receiptData:null, receiptName:'', uploadedDate:'' });
+  saveDB(); showToast('Student added to trip.'); openTripParticipants(tripId); refreshCurrentPanel();
+}
+function removeTripParticipant(voucherId, tripId){
+  db.tripVouchers = db.tripVouchers.filter(v=>v.id!==voucherId);
+  saveDB(); showToast('Student removed from trip.'); openTripParticipants(tripId); refreshCurrentPanel();
+}
+function reviewTripVoucher(id, status){
+  const v = db.tripVouchers.find(x=>x.id===id);
+  v.status = status;
+  if(status==='unpaid'){ v.receiptData=null; v.receiptName=''; v.uploadedDate=''; }
+  saveDB(); showToast('Voucher marked '+status+'.'); refreshCurrentPanel();
+}
+function viewTripReceipt(id){
+  const v = db.tripVouchers.find(x=>x.id===id);
+  if(!v || !v.receiptData) return;
+  const w = window.open('');
+  w.document.write(`<title>Receipt</title>`);
+  if(v.receiptData.startsWith('data:image')){ w.document.write(`<img src="${v.receiptData}" style="max-width:100%;">`); }
+  else { w.document.write(`<a href="${v.receiptData}" download="${esc(v.receiptName)}">Download receipt: ${esc(v.receiptName)}</a>`); }
+}
+
+/* ============================================================
+   ADMIN: ASSIGNMENTS
+============================================================ */
+function buildAdmAssignments(){
+  return `
+  <div class="pageHead"><div class="eyebrow">Activities</div><h2>Assignments</h2><p>Post assignments and review student submissions.</p></div>
+  <div class="card">
+    <h3>All Assignments <button class="btn primary small" onclick="openAssignmentForm()">+ New Assignment</button></h3>
+    ${db.assignments.slice().reverse().map(a=>{
+      const subCount = db.assignmentSubs.filter(s=>s.assignmentId===a.id).length;
+      return `
+      <div class="itemRow">
+        <div class="info"><b>${esc(a.title)}</b><span>${esc(a.subject)} · Due: ${esc(a.dueDate)} · ${subCount} submission(s)</span></div>
+        <div class="rowFlex">
+          <button class="btn small outline" onclick="openAssignmentSubs('${a.id}')">Submissions</button>
+          <button class="btn small outline" onclick="openAssignmentForm('${a.id}')">Edit</button>
+          <button class="btn small maroon" onclick="deleteAssignment('${a.id}')">Delete</button>
+        </div>
+      </div>`;
+    }).join('') || '<div class="emptyState">No assignments posted yet.</div>'}
+  </div>`;
+}
+function openAssignmentForm(id){
+  const a = id ? db.assignments.find(x=>x.id===id) : null;
+  openModal(`
+    <h2>${a?'Edit Assignment':'New Assignment'}</h2>
+    <input type="hidden" id="as_id" value="${a?a.id:''}">
+    <div class="formGrid">
+      <div class="fGroup full"><label>Title</label><input id="as_title" value="${escAttr(a?a.title:'')}"></div>
+      <div class="fGroup"><label>Subject</label><input id="as_subject" value="${escAttr(a?a.subject:'')}"></div>
+      <div class="fGroup"><label>Due Date</label><input id="as_dueDate" value="${escAttr(a?a.dueDate:'')}" placeholder="20-Sep-2026"></div>
+      <div class="fGroup full"><label>Instructions</label><textarea id="as_instructions">${esc(a?a.instructions:'')}</textarea></div>
+    </div>
+    <div class="modalActions">
+      <button class="btn outline" onclick="closeModal()">Cancel</button>
+      <button class="btn primary" onclick="saveAssignment()">${a?'Save Changes':'Post Assignment'}</button>
+    </div>
+  `);
+}
+function saveAssignment(){
+  const id = document.getElementById('as_id').value;
+  const data = {
+    title: document.getElementById('as_title').value.trim(),
+    subject: document.getElementById('as_subject').value.trim(),
+    dueDate: document.getElementById('as_dueDate').value.trim(),
+    instructions: document.getElementById('as_instructions').value.trim(),
+  };
+  if(!data.title || !data.dueDate){ showToast('Title and due date are required.'); return; }
+  if(id){ Object.assign(db.assignments.find(x=>x.id===id), data); }
+  else { db.assignments.push(Object.assign({id:uid(), fileData:null, fileName:''}, data)); }
+  saveDB(); closeModal(); showToast('Assignment saved.'); refreshCurrentPanel();
+}
+function deleteAssignment(id){
+  if(!confirm('Delete this assignment? All student submissions will also be removed.')) return;
+  db.assignments = db.assignments.filter(a=>a.id!==id);
+  db.assignmentSubs = db.assignmentSubs.filter(s=>s.assignmentId!==id);
+  saveDB(); showToast('Assignment deleted.'); refreshCurrentPanel();
+}
+function openAssignmentSubs(assignmentId){
+  const a = db.assignments.find(x=>x.id===assignmentId);
+  const subs = db.assignmentSubs.filter(s=>s.assignmentId===assignmentId);
+  openModal(`
+    <h2>Submissions — ${esc(a.title)}</h2>
+    ${subs.map(s=>{
+      const st = db.students.find(x=>x.id===s.studentId);
+      return `
+      <div class="itemRow">
+        <div class="info"><b>${esc(st?st.name:'Unknown')}</b><span>Submitted: ${esc(s.submittedDate)} ${s.grade?('· Grade: '+esc(s.grade)):''}</span></div>
+        <div class="rowFlex">
+          <a class="btn small outline" href="${s.fileData}" download="${escAttr(s.fileName)}">Download</a>
+          <input id="grade_${s.id}" placeholder="Grade" value="${escAttr(s.grade||'')}" style="width:70px;padding:6px 8px;border:1.5px solid var(--line);border-radius:6px;font-size:12px;">
+          <button class="btn small primary" onclick="saveSubGrade('${s.id}')">Save</button>
+        </div>
+      </div>`;
+    }).join('') || '<div class="emptyState">No submissions yet.</div>'}
+    <div class="modalActions"><button class="btn outline" onclick="closeModal()">Close</button></div>
+  `);
+}
+function saveSubGrade(subId){
+  const s = db.assignmentSubs.find(x=>x.id===subId);
+  s.grade = document.getElementById('grade_'+subId).value.trim();
+  saveDB(); showToast('Grade saved.');
+}
+
+/* ============================================================
+   ADMIN: ONLINE CLASSES
+============================================================ */
+function buildAdmOnlineClasses(){
+  return `
+  <div class="pageHead"><div class="eyebrow">Activities</div><h2>Online Classes</h2><p>Schedule live online classes for students.</p></div>
+  <div class="card">
+    <h3>Scheduled Classes <button class="btn primary small" onclick="openOnlineClassForm()">+ Schedule Class</button></h3>
+    ${db.onlineClasses.slice().reverse().map(c=>`
+      <div class="itemRow">
+        <div class="info"><b>${esc(c.subject)}</b><span>${esc(c.teacher)} · ${esc(c.date)} at ${esc(c.time)}</span></div>
+        <div class="rowFlex">
+          <a class="btn small outline" href="${escAttr(c.link)}" target="_blank" rel="noopener">Open Link</a>
+          <button class="btn small outline" onclick="openOnlineClassForm('${c.id}')">Edit</button>
+          <button class="btn small maroon" onclick="deleteOnlineClass('${c.id}')">Delete</button>
+        </div>
+      </div>`).join('') || '<div class="emptyState">No online classes scheduled yet.</div>'}
+  </div>`;
+}
+function openOnlineClassForm(id){
+  const c = id ? db.onlineClasses.find(x=>x.id===id) : null;
+  openModal(`
+    <h2>${c?'Edit Class':'Schedule Online Class'}</h2>
+    <input type="hidden" id="oc_id" value="${c?c.id:''}">
+    <div class="formGrid">
+      <div class="fGroup full"><label>Subject</label><input id="oc_subject" value="${escAttr(c?c.subject:'')}"></div>
+      <div class="fGroup"><label>Teacher</label><input id="oc_teacher" value="${escAttr(c?c.teacher:'')}"></div>
+      <div class="fGroup"><label>Date</label><input id="oc_date" value="${escAttr(c?c.date:'')}" placeholder="20-Sep-2026"></div>
+      <div class="fGroup"><label>Time</label><input id="oc_time" value="${escAttr(c?c.time:'')}" placeholder="10:00 AM"></div>
+      <div class="fGroup full"><label>Meeting Link</label><input id="oc_link" value="${escAttr(c?c.link:'')}" placeholder="https://meet.google.com/..."></div>
+    </div>
+    <div class="modalActions">
+      <button class="btn outline" onclick="closeModal()">Cancel</button>
+      <button class="btn primary" onclick="saveOnlineClass()">${c?'Save Changes':'Schedule'}</button>
+    </div>
+  `);
+}
+function saveOnlineClass(){
+  const id = document.getElementById('oc_id').value;
+  const data = {
+    subject: document.getElementById('oc_subject').value.trim(),
+    teacher: document.getElementById('oc_teacher').value.trim(),
+    date: document.getElementById('oc_date').value.trim(),
+    time: document.getElementById('oc_time').value.trim(),
+    link: document.getElementById('oc_link').value.trim(),
+  };
+  if(!data.subject || !data.link){ showToast('Subject and meeting link are required.'); return; }
+  if(id){ Object.assign(db.onlineClasses.find(x=>x.id===id), data); }
+  else { db.onlineClasses.push(Object.assign({id:uid()}, data)); }
+  saveDB(); closeModal(); showToast('Online class saved.'); refreshCurrentPanel();
+}
+function deleteOnlineClass(id){
+  if(!confirm('Delete this online class?')) return;
+  db.onlineClasses = db.onlineClasses.filter(c=>c.id!==id);
+  saveDB(); showToast('Online class deleted.'); refreshCurrentPanel();
+}
+
+/* ============================================================
+   ADMIN: SPORTS GALA
+============================================================ */
+function buildAdmSports(){
+  return `
+  <div class="pageHead"><div class="eyebrow">Activities</div><h2>Sports Gala</h2><p>Set up games, fees and manage participants.</p></div>
+  <div class="card">
+    <h3>Games <button class="btn primary small" onclick="openSportsGameForm()">+ Add Game</button></h3>
+    ${db.sportsGames.slice().reverse().map(g=>{
+      const count = db.sportsParticipants.filter(p=>p.gameId===g.id).length;
+      return `
+      <div class="itemRow">
+        <div class="info"><b>${esc(g.name)}</b><span>Fee: PKR ${esc(g.fee)} · ${esc(g.date)} · ${count}${g.maxParticipants?('/'+esc(g.maxParticipants)):''} participants</span></div>
+        <div class="rowFlex">
+          <button class="btn small outline" onclick="openSportsParticipants('${g.id}')">Participants</button>
+          <button class="btn small outline" onclick="openSportsGameForm('${g.id}')">Edit</button>
+          <button class="btn small maroon" onclick="deleteSportsGame('${g.id}')">Delete</button>
+        </div>
+      </div>`;
+    }).join('') || '<div class="emptyState">No games added yet.</div>'}
+  </div>`;
+}
+function openSportsGameForm(id){
+  const g = id ? db.sportsGames.find(x=>x.id===id) : null;
+  openModal(`
+    <h2>${g?'Edit Game':'Add Game'}</h2>
+    <input type="hidden" id="sg_id" value="${g?g.id:''}">
+    <div class="formGrid">
+      <div class="fGroup full"><label>Game Name</label><input id="sg_name" value="${escAttr(g?g.name:'')}" placeholder="Cricket, Tug of War, 100m Race..."></div>
+      <div class="fGroup"><label>Fee (PKR)</label><input id="sg_fee" value="${escAttr(g?g.fee:'0')}"></div>
+      <div class="fGroup"><label>Date</label><input id="sg_date" value="${escAttr(g?g.date:'')}" placeholder="5-Nov-2026"></div>
+      <div class="fGroup full"><label>Max Participants (optional)</label><input id="sg_maxParticipants" value="${escAttr(g?g.maxParticipants:'')}"></div>
+    </div>
+    <div class="modalActions">
+      <button class="btn outline" onclick="closeModal()">Cancel</button>
+      <button class="btn primary" onclick="saveSportsGame()">${g?'Save Changes':'Add Game'}</button>
+    </div>
+  `);
+}
+function saveSportsGame(){
+  const id = document.getElementById('sg_id').value;
+  const data = {
+    name: document.getElementById('sg_name').value.trim(),
+    fee: document.getElementById('sg_fee').value.trim() || '0',
+    date: document.getElementById('sg_date').value.trim(),
+    maxParticipants: document.getElementById('sg_maxParticipants').value.trim(),
+  };
+  if(!data.name){ showToast('Game name is required.'); return; }
+  if(id){ Object.assign(db.sportsGames.find(x=>x.id===id), data); }
+  else { db.sportsGames.push(Object.assign({id:uid()}, data)); }
+  saveDB(); closeModal(); showToast('Game saved.'); refreshCurrentPanel();
+}
+function deleteSportsGame(id){
+  if(!confirm('Delete this game? All participant records will also be removed.')) return;
+  db.sportsGames = db.sportsGames.filter(g=>g.id!==id);
+  db.sportsParticipants = db.sportsParticipants.filter(p=>p.gameId!==id);
+  saveDB(); showToast('Game deleted.'); refreshCurrentPanel();
+}
+function openSportsParticipants(gameId){
+  const g = db.sportsGames.find(x=>x.id===gameId);
+  if(!db.students.length){ showToast('Add a student first.'); return; }
+  openModal(`
+    <h2>Participants — ${esc(g.name)}</h2>
+    <p class="sub">Tick a student to register them for this game.</p>
+    <table>
+      <thead><tr><th>Student</th><th>Reg No.</th><th>Status</th><th></th></tr></thead>
+      <tbody>
+        ${db.students.map(s=>{
+          const p = db.sportsParticipants.find(x=>x.gameId===gameId && x.studentId===s.id);
+          return `<tr>
+            <td>${esc(s.name)}</td><td class="mono">${esc(s.regNo)}</td>
+            <td>${p?`<span class="pill ${p.paid?'green':'gold'}">${p.paid?'paid':'registered'}</span>`:'<span class="pill">not joined</span>'}</td>
+            <td>
+              ${p ? `
+                <button class="btn small outline" onclick="toggleSportsPaid('${p.id}')">${p.paid?'Mark Unpaid':'Mark Paid'}</button>
+                <button class="btn small maroon" onclick="removeSportsParticipant('${p.id}','${gameId}')">Remove</button>
+              ` : `<button class="btn small primary" onclick="addSportsParticipant('${gameId}','${s.id}')">Add</button>`}
+            </td>
+          </tr>`;
+        }).join('')}
+      </tbody>
+    </table>
+    <div class="modalActions"><button class="btn outline" onclick="closeModal()">Close</button></div>
+  `);
+}
+function addSportsParticipant(gameId, studentId){
+  db.sportsParticipants.push({ id:uid(), gameId, studentId, paid:false });
+  saveDB(); showToast('Student added.'); openSportsParticipants(gameId); refreshCurrentPanel();
+}
+function removeSportsParticipant(id, gameId){
+  db.sportsParticipants = db.sportsParticipants.filter(p=>p.id!==id);
+  saveDB(); showToast('Student removed.'); openSportsParticipants(gameId); refreshCurrentPanel();
+}
+function toggleSportsPaid(id){
+  const p = db.sportsParticipants.find(x=>x.id===id);
+  p.paid = !p.paid;
+  saveDB(); const gameId = p.gameId; showToast('Status updated.'); openSportsParticipants(gameId); refreshCurrentPanel();
+}
+
+/* ============================================================
+   STUDENT: TRIPS & TOURS
+============================================================ */
+function buildStuTrips(){
+  const s = currentStudent();
+  const myVouchers = db.tripVouchers.filter(v=>v.studentId===s.id).slice().reverse();
+  return `
+  <div class="pageHead"><div class="eyebrow">Activities</div><h2>Trips & Tours</h2><p>Download your voucher and upload your receipt.</p></div>
+  <div class="card">
+    <h3>My Trips</h3>
+    ${myVouchers.map(v=>{
+      const t = db.trips.find(x=>x.id===v.tripId);
+      return `
+      <div class="itemRow">
+        <div class="info"><b>${esc(t?t.title:'Trip')} — PKR ${esc(v.amount)}</b><span>${esc(t?t.destination:'')} · Date: ${esc(v.dueDate)} ${v.receiptName?('· Uploaded: '+esc(v.receiptName)):''}</span></div>
+        <div class="rowFlex">
+          <span class="pill ${v.status==='paid'?'green':v.status==='submitted'?'gold':'red'}">${v.status}</span>
+          <button class="btn small outline" onclick="printTripVoucher('${v.id}')">Download / Print</button>
+          ${v.status!=='paid' ? `
+          <label class="btn small primary" style="margin:0;">
+            Upload Paid Receipt
+            <input type="file" accept="image/*,.pdf" style="display:none;" onchange="uploadTripReceipt('${v.id}', this)">
+          </label>` : ''}
+        </div>
+      </div>`;
+    }).join('') || '<div class="emptyState">You have not been added to any trip yet.</div>'}
+  </div>
+  <div class="card">
+    <h3>Upcoming Trips</h3>
+    ${db.trips.map(t=>`
+      <div class="itemRow">
+        <div class="info"><b>${esc(t.title)}</b><span>${esc(t.destination)} · ${esc(t.date)} · Fee: PKR ${esc(t.fee)}</span></div>
+      </div>`).join('') || '<div class="emptyState">No trips announced yet.</div>'}
+  </div>`;
+}
+function printTripVoucher(id){
+  const v = db.tripVouchers.find(x=>x.id===id);
+  const t = db.trips.find(x=>x.id===v.tripId);
+  const s = currentStudent();
+  const w = window.open('', '_blank');
+  w.document.write(`
+    <html><head><title>Trip Voucher</title>
+    <style>body{font-family:Arial,sans-serif;padding:40px;color:#111;}h1{font-size:20px;}table{width:100%;border-collapse:collapse;margin-top:20px;}td{padding:10px;border-bottom:1px solid #ccc;}td:first-child{color:#666;width:40%;}</style>
+    </head><body>
+    <h1>Unique Student Cooperation — Trip Fee Voucher</h1>
+    <table>
+      <tr><td>Student Name</td><td><b>${esc(s.name)}</b></td></tr>
+      <tr><td>Registration No.</td><td>${esc(s.regNo)}</td></tr>
+      <tr><td>Trip</td><td>${esc(t?t.title:'')}</td></tr>
+      <tr><td>Destination</td><td>${esc(t?t.destination:'')}</td></tr>
+      <tr><td>Amount</td><td><b>PKR ${esc(v.amount)}</b></td></tr>
+      <tr><td>Trip Date</td><td>${esc(v.dueDate)}</td></tr>
+      <tr><td>Status</td><td>${esc(v.status)}</td></tr>
+    </table>
+    <p style="margin-top:30px;font-size:12px;color:#666;">Please pay before the trip date and upload your paid receipt on the student portal.</p>
+    <script>window.print()<\/script>
+    </body></html>`);
+  w.document.close();
+}
+function uploadTripReceipt(voucherId, inputEl){
+  const file = inputEl.files[0];
+  if(!file) return;
+  if(file.size > 4*1024*1024){ showToast('File too large — please upload an image/PDF under 4MB.'); return; }
+  const reader = new FileReader();
+  reader.onload = function(e){
+    const v = db.tripVouchers.find(x=>x.id===voucherId);
+    v.receiptData = e.target.result;
+    v.receiptName = file.name;
+    v.uploadedDate = new Date().toISOString().slice(0,10);
+    v.status = 'submitted';
+    saveDB(); showToast('Receipt uploaded — awaiting admin review.'); refreshCurrentPanel();
+  };
+  reader.readAsDataURL(file);
+}
+
+/* ============================================================
+   STUDENT: ASSIGNMENTS
+============================================================ */
+function buildStuAssignments(){
+  const s = currentStudent();
+  return `
+  <div class="pageHead"><div class="eyebrow">Activities</div><h2>Assignments</h2><p>View assignments and upload your submission.</p></div>
+  <div class="card">
+    ${db.assignments.slice().reverse().map(a=>{
+      const sub = db.assignmentSubs.find(x=>x.assignmentId===a.id && x.studentId===s.id);
+      return `
+      <div class="itemRow">
+        <div class="info"><b>${esc(a.title)}</b><span>${esc(a.subject)} · Due: ${esc(a.dueDate)}${a.instructions?(' · '+esc(a.instructions)):''}</span></div>
+        <div class="rowFlex">
+          ${sub ? `<span class="pill ${sub.grade?'green':'gold'}">${sub.grade?('Grade: '+sub.grade):'submitted'}</span>` : '<span class="pill red">not submitted</span>'}
+          <label class="btn small primary" style="margin:0;">
+            ${sub?'Resubmit':'Upload Submission'}
+            <input type="file" style="display:none;" onchange="uploadAssignmentSub('${a.id}', this)">
+          </label>
+        </div>
+      </div>`;
+    }).join('') || '<div class="emptyState">No assignments posted yet.</div>'}
+  </div>`;
+}
+function uploadAssignmentSub(assignmentId, inputEl){
+  const file = inputEl.files[0];
+  if(!file) return;
+  if(file.size > 4*1024*1024){ showToast('File too large — please upload a file under 4MB.'); return; }
+  const s = currentStudent();
+  const reader = new FileReader();
+  reader.onload = function(e){
+    let sub = db.assignmentSubs.find(x=>x.assignmentId===assignmentId && x.studentId===s.id);
+    if(!sub){ sub = { id:uid(), assignmentId, studentId:s.id, grade:'' }; db.assignmentSubs.push(sub); }
+    sub.fileData = e.target.result; sub.fileName = file.name; sub.submittedDate = new Date().toISOString().slice(0,10);
+    saveDB(); showToast('Submission uploaded.'); refreshCurrentPanel();
+  };
+  reader.readAsDataURL(file);
+}
+
+/* ============================================================
+   STUDENT: ONLINE CLASSES
+============================================================ */
+function buildStuOnlineClasses(){
+  return `
+  <div class="pageHead"><div class="eyebrow">Activities</div><h2>Online Classes</h2><p>Join your scheduled live classes.</p></div>
+  <div class="card">
+    ${db.onlineClasses.slice().reverse().map(c=>`
+      <div class="itemRow">
+        <div class="info"><b>${esc(c.subject)}</b><span>${esc(c.teacher)} · ${esc(c.date)} at ${esc(c.time)}</span></div>
+        <div class="rowFlex"><a class="btn small primary" href="${escAttr(c.link)}" target="_blank" rel="noopener">Join Class</a></div>
+      </div>`).join('') || '<div class="emptyState">No online classes scheduled yet.</div>'}
+  </div>`;
+}
+
+/* ============================================================
+   STUDENT: SPORTS GALA
+============================================================ */
+function buildStuSports(){
+  const s = currentStudent();
+  return `
+  <div class="pageHead"><div class="eyebrow">Activities</div><h2>Sports Gala</h2><p>Games, fees and your participation status.</p></div>
+  <div class="card">
+    ${db.sportsGames.slice().reverse().map(g=>{
+      const p = db.sportsParticipants.find(x=>x.gameId===g.id && x.studentId===s.id);
+      return `
+      <div class="itemRow">
+        <div class="info"><b>${esc(g.name)}</b><span>Fee: PKR ${esc(g.fee)} · ${esc(g.date)}</span></div>
+        <div class="rowFlex">${p?`<span class="pill ${p.paid?'green':'gold'}">${p.paid?'paid':'registered'}</span>`:'<span class="pill">not registered</span>'}</div>
+      </div>`;
+    }).join('') || '<div class="emptyState">No games announced yet.</div>'}
+  </div>`;
+}
+
+/* ============================================================
+   STUDENT: PROFILE
+============================================================ */
+function buildStuProfile(){
+  const s = currentStudent();
+  const rows = [
+    ['Full Name', s.name], ["Father's Name", s.fatherName], ['Registration No.', s.regNo],
+    ['Programme', s.program], ['Department', s.department], ['Campus', s.campus],
+    ['Current Semester', s.currentSemester], ['Session', s.session], ['CNIC / B-Form', s.cnic],
+    ['Date of Birth', s.dob], ['Phone', s.phone], ['Email', s.email], ['Address', s.address],
+  ];
+  return `
+  <div class="pageHead"><div class="eyebrow">Academics</div><h2>My Profile</h2><p>Your information on record.</p></div>
+  <div class="card">
+    <table>
+      <tbody>
+        ${rows.map(([label,val])=>`<tr><td style="color:var(--ink-soft);width:220px;">${esc(label)}</td><td><b>${esc(val||'—')}</b></td></tr>`).join('')}
+      </tbody>
+    </table>
+  </div>`;
+}
+
+/* ============================================================
+   STUDENT: TRANSCRIPT
+============================================================ */
+function buildStuTranscript(){
+  const s = currentStudent();
+  const results = s.results || [];
+  const gp = {'A':4,'A-':3.7,'B+':3.3,'B':3,'B-':2.7,'C+':2.3,'C':2,'C-':1.7,'D':1,'F':0};
+  let totalCredit=0, totalPoints=0;
+  results.forEach(sem=> sem.courses.forEach(c=>{
+    const cr = parseFloat(c.credit)||0;
+    const g = gp[String(c.grade).toUpperCase().trim()];
+    if(g!=null){ totalCredit+=cr; totalPoints+=cr*g; }
+  }));
+  const cgpa = totalCredit ? (totalPoints/totalCredit).toFixed(2) : '—';
+  return `
+  <div class="pageHead"><div class="eyebrow">Academics</div><h2>Transcript</h2><p>All your semester results.</p></div>
+  <div class="grid4">
+    <div class="statCard"><div class="lbl">CGPA</div><div class="val">${cgpa}</div><div class="sub">Cumulative</div></div>
+    <div class="statCard"><div class="lbl">Semesters</div><div class="val">${results.length}</div><div class="sub">On record</div></div>
+    <div class="statCard"><div class="lbl">Total Credits</div><div class="val">${totalCredit||0}</div><div class="sub">Attempted</div></div>
+    <div class="statCard"><div class="lbl">Programme</div><div class="val" style="font-size:15px;">${esc(s.program||'—')}</div></div>
+  </div>
+  ${results.map(sem=>`
+    <div class="card">
+      <h3>${esc(sem.semester)}</h3>
+      <table>
+        <thead><tr><th>Course</th><th>Title</th><th>Credit</th><th>Grade</th></tr></thead>
+        <tbody>${sem.courses.map(c=>`<tr><td class="mono">${esc(c.code)}</td><td>${esc(c.title)}</td><td>${esc(c.credit)}</td><td><b>${esc(c.grade)}</b></td></tr>`).join('')}</tbody>
+      </table>
+    </div>`).join('') || '<div class="card"><div class="emptyState">No results on record yet — transcript will populate once results are added.</div></div>'}
+  <div class="rowFlex"><button class="btn primary" onclick="window.print()">Print Transcript</button></div>`;
+}
+
+/* ============================================================
+   STUDENT: TIME TABLE
+============================================================ */
+function buildStuTimetable(){
+  const days = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const grouped = days.map(d=> ({ day:d, rows: db.timetable.filter(t=>t.day===d) })).filter(g=>g.rows.length);
+  return `
+  <div class="pageHead"><div class="eyebrow">Academics</div><h2>Time Table</h2><p>Your weekly class schedule.</p></div>
+  ${grouped.map(g=>`
+    <div class="card">
+      <h3>${esc(g.day)}</h3>
+      <table>
+        <thead><tr><th>Time</th><th>Course</th><th>Teacher</th><th>Room</th></tr></thead>
+        <tbody>${g.rows.map(t=>`<tr><td class="mono">${esc(t.time)}</td><td>${esc(t.course)}</td><td>${esc(t.teacher)}</td><td>${esc(t.room)}</td></tr>`).join('')}</tbody>
+      </table>
+    </div>`).join('') || '<div class="card"><div class="emptyState">No timetable has been published yet.</div></div>'}`;
+}
+
+/* ============================================================
+   STUDENT: SUPPORT TICKETS
+============================================================ */
+function buildStuTickets(){
+  const s = currentStudent();
+  const myTickets = db.tickets.filter(t=>t.studentId===s.id).slice().reverse();
+  return `
+  <div class="pageHead"><div class="eyebrow">Requests</div><h2>Support Tickets</h2><p>Raise a ticket and track the response.</p></div>
+  <div class="card">
+    <div class="rowFlex" style="margin-bottom:14px;"><button class="btn primary small" onclick="openNewTicketForm()">+ New Ticket</button></div>
+    ${myTickets.map(t=>`
+      <div class="itemRow" style="align-items:flex-start;">
+        <div class="info">
+          <b>${esc(t.subject)}</b><span>${esc(t.date)}</span>
+          <p style="font-size:12.5px;color:var(--ink);margin-top:8px;">${esc(t.message)}</p>
+          ${t.reply ? `<p style="font-size:12.5px;color:var(--success);margin-top:8px;"><b>Admin reply:</b> ${esc(t.reply)}</p>` : ''}
+        </div>
+        <span class="pill ${t.status==='closed'?'green':t.status==='replied'?'gold':'red'}">${esc(t.status)}</span>
+      </div>`).join('') || '<div class="emptyState">You haven\'t raised any support tickets yet.</div>'}
+  </div>`;
+}
+function openNewTicketForm(){
+  openModal(`
+    <h2>New Support Ticket</h2>
+    <div class="fGroup"><label>Subject</label><input id="ntf_subject" placeholder="e.g. Issue with fee voucher"></div>
+    <div class="fGroup"><label>Message</label><textarea id="ntf_message" placeholder="Describe your issue..."></textarea></div>
+    <div class="modalActions">
+      <button class="btn outline" onclick="closeModal()">Cancel</button>
+      <button class="btn primary" onclick="submitTicket()">Submit</button>
+    </div>
+  `);
+}
+function submitTicket(){
+  const s = currentStudent();
+  const subject = document.getElementById('ntf_subject').value.trim();
+  const message = document.getElementById('ntf_message').value.trim();
+  if(!subject || !message){ showToast('Subject and message are required.'); return; }
+  db.tickets.push({ id:uid(), studentId:s.id, subject, message, status:'open', date:new Date().toISOString().slice(0,10) });
+  saveDB(); closeModal(); showToast('Ticket submitted.'); refreshCurrentPanel();
+}
+
+/* ============================================================
+   STUDENT: DOCUMENT REPOSITORY (read-only)
+============================================================ */
+function buildStuDocuments(){
+  return `
+  <div class="pageHead"><div class="eyebrow">Resources</div><h2>Document Repository</h2><p>Shared forms, notices and documents.</p></div>
+  <div class="card">
+    ${db.documents.slice().reverse().map(d=>`
+      <div class="itemRow">
+        <div class="info"><b>${esc(d.title)}</b><span>${esc(d.category)} · Uploaded ${esc(d.date)}</span></div>
+        <a class="btn small outline" href="${d.fileData}" download="${escAttr(d.title)}">Download</a>
+      </div>`).join('') || '<div class="emptyState">No documents have been shared yet.</div>'}
+  </div>`;
+}
+
+/* ============================================================
+   STUDENT: LIBRARY (reference info)
+============================================================ */
+function buildStuLibrary(){
+  return `
+  <div class="pageHead"><div class="eyebrow">Resources</div><h2>Library</h2><p>Library access and references.</p></div>
+  <div class="grid3">
+    <div class="card"><h3>Opening Hours</h3><p style="font-size:13px;color:var(--ink-soft);">Mon – Fri: 8:30 AM – 8:00 PM<br>Saturday: 9:00 AM – 4:00 PM<br>Sunday: Closed</p></div>
+    <div class="card"><h3>Borrowing Policy</h3><p style="font-size:13px;color:var(--ink-soft);">Undergraduate students may borrow up to 4 books for 14 days, renewable once if not reserved by another student.</p></div>
+    <div class="card"><h3>Need Help?</h3><p style="font-size:13px;color:var(--ink-soft);">Raise a Support Ticket for book requests, renewals, or access issues and the library desk will get back to you.</p></div>
+  </div>`;
+}
+
+/* ============================================================
+   STUDENT: MY STUDENT CARD
+============================================================ */
+function buildStuIDCard(){
+  const s = currentStudent();
+  return `
+  <div class="pageHead"><div class="eyebrow">Resources</div><h2>My Student Card</h2><p>Your digital ID card.</p></div>
+  <div class="card" style="max-width:420px;">
+    <div style="background:linear-gradient(160deg,var(--navy),var(--navy-light));border-radius:10px;padding:22px;color:var(--white);">
+      <div style="font-family:'Lora',serif;font-size:14px;font-weight:700;letter-spacing:0.5px;">UNIQUE STUDENT COOPERATION</div>
+      <div style="font-size:10px;color:var(--gold-light);letter-spacing:1.5px;margin-bottom:16px;">STUDENT IDENTITY CARD</div>
+      <div style="width:64px;height:64px;border-radius:50%;background:var(--gold-light);display:flex;align-items:center;justify-content:center;font-family:'IBM Plex Mono',monospace;font-weight:700;color:var(--navy);font-size:20px;margin-bottom:14px;">${esc(initials(s.name||'Student'))}</div>
+      <div style="font-size:16px;font-weight:700;">${esc(s.name)}</div>
+      <div style="font-size:11.5px;color:rgba(255,255,255,0.75);margin-top:2px;">${esc(s.program||'—')}</div>
+      <div style="display:flex;justify-content:space-between;margin-top:18px;font-size:10.5px;font-family:'IBM Plex Mono',monospace;color:rgba(255,255,255,0.8);">
+        <span>REG NO<br><b style="font-size:12px;color:var(--white);">${esc(s.regNo)}</b></span>
+        <span>SEMESTER<br><b style="font-size:12px;color:var(--white);">${esc(s.currentSemester||'—')}</b></span>
+        <span>CAMPUS<br><b style="font-size:12px;color:var(--white);">${esc(s.campus||'—')}</b></span>
+      </div>
+    </div>
+  </div>
+  <div class="rowFlex" style="margin-top:16px;"><button class="btn primary" onclick="window.print()">Print Card</button></div>`;
+}
+
+/* ============================================================
+   UTIL: escaping
+============================================================ */
+function esc(str){ return String(str==null?'':str).replace(/[&<>"']/g, m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+function escAttr(str){ return esc(str); }
+
+// auto-login if a session already exists in this browser
+(function tryAutoLogin(){
+  try{
+    const raw = sessionStorage.getItem(SESSION_KEY);
+    if(!raw) return;
+    const sess = JSON.parse(raw);
+    if(sess.role==='admin' && (!sess.staffId || db.staff.find(st=>st.id===sess.staffId))){ currentUser = sess; enterApp(); }
+    else if(sess.role==='student' && db.students.find(s=>s.id===sess.id)){ currentUser = sess; enterApp(); }
+  }catch(e){}
+})();
+</script>
+</body>
+</html>
+
+
