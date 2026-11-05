@@ -1,17 +1,29 @@
 # USC Supabase backend setup
 
-This repository now includes a Supabase Postgres schema for student records and a server-side AI chat function. The OpenAI key is kept in Supabase Edge Function secrets, never in browser code.
+This repository includes a Supabase Postgres schema for student records, a browser adapter, and a server-side AI chat function. The OpenAI key is kept in Supabase Edge Function secrets, never in browser code.
 
 ## 1. Create/configure Supabase
 
 1. Create a Supabase project and keep its database password private.
 2. In **Project Settings → API**, copy the Project URL and the `anon`/publishable key. These are intended for the browser; never expose the `service_role` key.
 3. In **SQL Editor**, run `supabase/migrations/202611050001_student_database.sql`.
-4. In **Authentication → Providers**, enable the sign-in provider you intend to use and configure allowed site URLs/redirects.
+4. Copy `supabase/config.example.js` to `supabase/config.js` and add your Project URL and anon/publishable key.
+5. In **Authentication → Providers**, enable email/password sign-in and configure allowed site URLs/redirects.
 
 The schema enables row-level security. A signed-in student can read only their own student record. Admins can manage student records. New Auth users receive the `student` role automatically; a client cannot set its own role.
 
-## 2. Create the first admin and student records
+## 2. Load the browser adapter
+
+The existing `index.html` is still primarily a localStorage prototype. To load the new adapter, add these scripts after the existing Supabase CDN script and before the app's inline script:
+
+```html
+<script src="supabase/config.js"></script>
+<script src="supabase/portal-client.js"></script>
+```
+
+The adapter exposes `window.USCBackend` methods: `signIn(email, password)`, `signOut()`, `getRole()`, `getMyStudentRecord()`, `listStudents()`, `updateStudent(id, fields)`, and `askAI(messages)`. These methods use Supabase Auth and RLS. UI login, student CRUD, and `aiSend()` still need to be switched from the local demo functions to these methods; do not treat adding the adapter as an automatic migration of the old UI/data.
+
+## 3. Create the first admin and student records
 
 Create an Auth user for the administrator using the Supabase Dashboard. Then, from the SQL Editor (trusted project owner only), promote that user's profile:
 
@@ -30,7 +42,7 @@ values ('STUDENT_AUTH_USER_UUID', 'REG-001', 'Student Name', 'BS Computer Scienc
 
 Student information was not included in the repository request, so no real student data is preloaded. Keep CNIC and other personal data private and enter it only with authorization.
 
-## 3. Deploy the AI assistant function
+## 4. Deploy the AI assistant function
 
 Install the Supabase CLI, log in, link the project, then from the repository root:
 
@@ -41,8 +53,21 @@ supabase secrets set OPENAI_API_KEY=YOUR_OPENAI_API_KEY APP_ORIGIN=https://YOUR_
 supabase functions deploy ai-chat
 ```
 
-`APP_ORIGIN` should be the exact deployed website origin. Do not commit provider keys or the Supabase service-role key. The function requires a valid signed-in Supabase user and accepts only a limited text conversation; it does not read or send student database records to the AI provider. Configure usage limits/billing with your AI provider and consider gateway-level rate limiting before public production use.
+`APP_ORIGIN` should be the exact deployed website origin. Do not commit provider keys or the Supabase service-role key. The function requires a valid signed-in Supabase user and accepts a limited conversation. It does not read or send student database records to the AI provider. Configure usage limits/billing with your AI provider and consider gateway-level rate limiting before public production use.
 
-## 4. Frontend integration still required
+## 5. Connect the existing assistant
 
-`index.html` currently implements login and data storage with browser `localStorage`; adding this backend does not automatically migrate existing browser data or replace that authentication. To use the database in the live portal, configure the Supabase project URL/public anon key in the browser client, migrate the UI's student CRUD/login to Supabase Auth and `public.students`, and call the authenticated `ai-chat` Edge Function from `aiSend()`. Never put the `service_role` key or `OPENAI_API_KEY` in `index.html`. Export/backup existing local data before any migration; it is not automatically uploaded.
+Once the user is signed in to Supabase, call the adapter from the chat handler, keeping recent messages as `{ role: 'user' | 'assistant', content: string }`:
+
+```js
+const answer = await USCBackend.askAI(recentMessages);
+```
+
+Display `answer` as text (not HTML). Keep the chat's current loading/error states, and handle an expired session by asking the user to sign in again.
+
+## 6. Important migration and security notes
+
+- Existing `localStorage` records are not automatically uploaded; export/backup data before migration.
+- Existing localStorage passwords must not be copied to the database. Create Supabase Auth accounts with new credentials and link each Auth UUID to a student record.
+- Never put `service_role`, `OPENAI_API_KEY`, or an AI provider key in `index.html` or any browser JavaScript.
+- This repository does not contain real student data or Supabase project credentials; configure your own project before the backend can store/access records.
